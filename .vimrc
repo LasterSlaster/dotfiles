@@ -49,7 +49,9 @@ set shiftwidth=4
 " Auto indentation
 set smartindent
 " If search contains capital letter search case sensitive otherwise case insensitve
+set showcmd
 set smartcase
+set wildmenu
 set wildmode=list:longest,full
 
 " Remap Esc to jk
