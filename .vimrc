@@ -27,7 +27,7 @@ call plug#end()
 " run : PlugUpdate. To upgrade plug itself run :PlugUpgrade
 
 
-" If gruvbox plugin is install, sets gruvbox theme
+" If gruvbox plugin is install, sets gruvboc theme
 "
 colorscheme gruvbox
 set background=dark
@@ -125,6 +125,12 @@ nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
+" fast quit
+nnoremap <leader>q :q<CR>
+" fast write
+nnoremap <leader>w :w<CR>
+" fast lex command
+nnoremap <leader>e :Lex<CR>
 " Project search with ripgrep
 nnoremap <leader>ps :Rg<SPACE>
 nnoremap <silent> <Leader>+ :vertical resize +5<CR>
