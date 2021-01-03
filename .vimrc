@@ -17,7 +17,7 @@ Plug 'jremmen/vim-ripgrep' " Also 'apt install ripgrep'?
 Plug 'tpope/vim-fugitive'
 Plug 'lyuts/vim-rtags'
 Plug 'git@github.com:ctrlpvim/ctrlp.vim' " An alternative would be git@github.com:junegunn/fzf
-Plug 'git@github.com:Valloric/YouCompleteMe.git' " Also run './install.py --ts-completer --java-completer'
+Plug 'git@github.com:Valloric/YouCompleteMe.git' " Also run 'sudo apt install build-essential cmake python3-dev' and './install.py --ts-completer --java-completer'
 Plug 'mbbill/undotree'
 
 " Initialize plugin system
