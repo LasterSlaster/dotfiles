@@ -10,15 +10,23 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " Section of plugins to install
-" User Plug 'junegunn/vim-easy-align' to install plugins from github
-" git clone git://github.com/Raimondi/delimitMate.git
 Plug 'morhetz/gruvbox'
 Plug 'jremmen/vim-ripgrep' " Also 'apt install ripgrep'?
 Plug 'tpope/vim-fugitive'
 Plug 'lyuts/vim-rtags'
 Plug 'git@github.com:ctrlpvim/ctrlp.vim' " An alternative would be git@github.com:junegunn/fzf
-Plug 'git@github.com:Valloric/YouCompleteMe.git' " Also run 'sudo apt install build-essential cmake python3-dev' and './install.py --ts-completer --java-completer'
+"Plug 'neoclide/coc.nvim' An alternative/addition to YoutCompleteMe
+Plug 'git@github.com:Valloric/YouCompleteMe.git' " Also run './install.py --ts-completer --java-completer'
 Plug 'mbbill/undotree'
+Plug 'Raimondi/delimitMate'
+"Plug 'zirrostig/vim-schlepp' Move code blocks
+"Plug 'junegunn/vim-easy-align'
+"Plug 'junegunn/fzf' An alternative to ctrlp fuzzy finder
+" TODO: Echeckout these two plugins for improved movements. Also check out fzf :/
+" :/ for movements, FzfLines
+"Plug 'easymotion/vim-easymotion'
+"Plug 'justinmk/vim-sneak'
+
 
 " Initialize plugin system
 call plug#end()
