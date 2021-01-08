@@ -33,6 +33,8 @@ let g:gruvbox_guisp_fallback = "bg"
 colorscheme gruvbox
 set background=dark
 
+" Read file changes if open files have been changed by another program e.g. git pull
+set autoread
 " not act like vi
 set nocompatible
 " set line numbers on the left side of the screen
@@ -52,8 +54,7 @@ set smartindent
 " If search contains capital letter search case sensitive otherwise case insensitve
 set showcmd
 set smartcase
-set wildmenu
-set wildmode=list:longest,full
+set hidden
 
 " Remap Esc to jk
 inoremap jk <ESC>
@@ -71,6 +72,7 @@ filetype plugin on
 set path+=**
 " Display all matching files when we tab complete
 set wildmenu
+set wildmode=list:longest,full
 
 " TAG JUMPING:
 " install ctags with: sudo apt install universal-ctags
