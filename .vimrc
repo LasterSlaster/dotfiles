@@ -20,6 +20,7 @@ Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-com
 "Plug 'neoclide/coc.nvim' An alternative/addition to YoutCompleteMe
 Plug 'mbbill/undotree'
 Plug 'Raimondi/delimitMate'
+Plug 'dbeniamine/cheat.sh-vim'
 "Plug 'zirrostig/vim-schlepp' Move code blocks
 "Plug 'junegunn/vim-easy-align'
 "Plug 'junegunn/fzf' An alternative to ctrlp fuzzy finder
