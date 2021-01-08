@@ -15,6 +15,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'morhetz/gruvbox'
 Plug 'jremmen/vim-ripgrep' " Also 'apt install ripgrep'?
 Plug 'tpope/vim-fugitive'
+Plug 'junegunn/gv.vim' "Git commit browser
 Plug 'lyuts/vim-rtags'
 Plug 'ctrlpvim/ctrlp.vim' " An alternative would be git@github.com:junegunn/fzf
 Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'
