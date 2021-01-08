@@ -29,7 +29,7 @@ call plug#end()
 
 
 " If gruvbox plugin is install, sets gruvboc theme
-"
+let g:gruvbox_guisp_fallback = "bg"
 colorscheme gruvbox
 set background=dark
 
