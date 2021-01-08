@@ -95,6 +95,7 @@ let mapleader=" "
 " FILE BROWSING:
 if executable('rg')
 	let g:rg_derive_root='true'
+	let g:rg_highlight='true'
 	"let g:ctrlp_user_command=['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard'] 
 	"let g:ctrlp_user_command=['rg %s --files --color=never --glob""'] 
 	set grepprg=rg\ --color=never
