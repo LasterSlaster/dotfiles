@@ -131,16 +131,25 @@ nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
 nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
+" Open a new buffer with vertical split
+nnoremap <leader>n :vnew<CR>
 " fast quit
 nnoremap <leader>q :q<CR>
 " fast write
 nnoremap <leader>w :w<CR>
-" fast lex command
+" paste yanked word
+nnoremap <leader>p "0p
+vnoremap <leader>p "0p
+" indent line/s
+vnoremap <Tab> >l
+vnoremap <S-Tab> <l
+" fast lex commandleader
 nnoremap <leader>e :Lex<CR>
 " Project search with ripgrep
-nnoremap <leader>ps :Rg<SPACE>
+nnoremap <leader>s :Rg<SPACE>
 nnoremap <silent> <Leader>+ :vertical resize +5<CR>
 nnoremap <silent> <Leader>- :vertical resize -5<CR>
 " Go to definition of current token
 nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
 nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
+
