@@ -17,16 +17,20 @@ Plug 'junegunn/gv.vim' "Git commit browser
 Plug 'lyuts/vim-rtags'
 Plug 'ctrlpvim/ctrlp.vim' " An alternative would be git@github.com:junegunn/fzf
 Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'
-"Plug 'neoclide/coc.nvim' An alternative/addition to YoutCompleteMe
+"Plug 'neoclide/coc.nvim' An alternative/addition to YoutCompleteMe + a lot
+"more functionality. Also includes an explorer 'coc-explorer
+"Plug 'preservim/nerdtree' an alternative file explorer to the default netrw
+"Plug 'justinmk/vim-dirvish' another file explorer but very lightweight
 Plug 'mbbill/undotree'
 Plug 'Raimondi/delimitMate'
 "Plug 'zirrostig/vim-schlepp' Move code blocks
 "Plug 'junegunn/vim-easy-align'
 "Plug 'junegunn/fzf' An alternative to ctrlp fuzzy finder
-" TODO: Echeckout these two plugins for improved movements. Also check out fzf :/
+"Plug 'junegunn/fzf.vim' required for fzf
+" TODO: Checkout these two plugins for improved movements. Also check out fzf :/
 " :/ for movements, FzfLines
 "Plug 'easymotion/vim-easymotion'
-"Plug 'justinmk/vim-sneak'
+Plug 'justinmk/vim-sneak' "Simple two character movements
 
 
 " Initialize plugin system
@@ -99,6 +103,7 @@ command! MakeTags !ctags -R .
 
 
 let mapleader=" "
+let g:sneak#label = 1
 
 " FILE BROWSING:
 if executable('rg')
@@ -132,6 +137,13 @@ let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
 " - <CR>/v/t to open in an h-split/v-split/tab
 " - check |netrw-browse-maps| for more mappings 
 
+" FUNCTIONS:
+" Format innerword at current cursor location to first letter uppercase and
+" all following lower case e.g. 'Test'
+function! FormatInnerWord()
+	normal guiw~
+endfunction
+
 " REMAPPINGS:
 " Remap switching between windows
 nnoremap <leader>h :wincmd h<CR>
@@ -160,4 +172,4 @@ nnoremap <silent> <Leader>- :vertical resize -5<CR>
 " Go to definition of current token
 nnoremap <silent> <Leader>gd :YcmCompleter GoTo<CR>
 nnoremap <silent> <Leader>gf :YcmCompleter FixIt<CR>
-
+nnoremap <Leader>f :call FormatInnerWord()<CR>
