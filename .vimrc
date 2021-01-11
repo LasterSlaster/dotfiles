@@ -23,6 +23,7 @@ Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-com
 "Plug 'justinmk/vim-dirvish' another file explorer but very lightweight
 Plug 'mbbill/undotree'
 Plug 'Raimondi/delimitMate'
+Plug 'dbeniamine/cheat.sh-vim'
 "Plug 'zirrostig/vim-schlepp' Move code blocks
 "Plug 'junegunn/vim-easy-align'
 "Plug 'junegunn/fzf' An alternative to ctrlp fuzzy finder
@@ -112,11 +113,13 @@ if executable('rg')
 	"let g:ctrlp_user_command=['.git/', 'git --git-dir=%s/.git ls-files -oc --exclude-standard'] 
 	"let g:ctrlp_user_command=['rg %s --files --color=never --glob""'] 
 	set grepprg=rg\ --color=never
-	let g:ctrlp_user_command=['fdfind --type f -c never "" "%s"'] 
-	let g:ctrlp_use_caching=0
-	let g:ctrlp_working_path_mode='ra'
-	let g:ctrlp_switch_buffer='et'
 endif
+let g:ctrlp_user_command=['fdfind --type f -c never "" "%s"'] 
+let g:ctrlp_use_caching=0
+let g:ctrlp_working_path_mode='ra'
+let g:ctrlp_switch_buffer='et'
+let g:ctrlp_show_hidden = 1
+
 
 let g:ctrlp_root_markers=['pom.xml']
 let g:ctrlp_custom_ignore = {
