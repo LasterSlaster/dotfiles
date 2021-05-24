@@ -40,9 +40,9 @@ Plug 'Raimondi/delimitMate' "Automatic closing of quotes etc.
 Plug 'dbeniamine/cheat.sh-vim' "Browes code snippets etc. from cheat.sh website. Binding is <leader>KB or <leader>KE to search for last error. Also :HowIn javascrip will search for javascript version of current line
 Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
 "more functionality. Also includes an explorer 'coc-explorer
-" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-java, coc-html, coc-tsserver, coc-python, coc-snippet(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh
+" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh
 " Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'. Currently disabled because of incompatibility with coc plugin
-" Plug 'codota/tabnine-vim' " Code completion ai. Builds on top of YouCompleteMe plugin
+" Plug 'codota/tabnine-vim' " Code completion ai. Builds on top of YouCompleteMe plugin. Coc integration with coc-tabnine extenstion
 "Plug 'ctrlpvim/ctrlp.vim' " An alternative would be fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "An alternative to ctrlp fuzzy finder. Also install ag and ripgrep on your system
 Plug 'junegunn/fzf.vim' " Wrappers and commands for fzf in vim
