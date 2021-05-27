@@ -36,13 +36,14 @@ Plug 'junegunn/gv.vim' "Git commit browser. Command is :GV !/? or show changes o
 "Plug 'junegunn/vim-easy-align'
 "Plug 'tpope/vim-surround' " quickly edit surroundings (brackets, html tags, etc)
 Plug 'mbbill/undotree' "Shows a history of all changes in the file as a tree. Binds to <leader>u
-Plug 'Raimondi/delimitMate' "Automatic closing of quotes etc.
+"Plug 'Raimondi/delimitMate' "Automatic closing of quotes etc. Currently
+"disabled in favor of coc-pairs
 Plug 'dbeniamine/cheat.sh-vim' "Browes code snippets etc. from cheat.sh website. Binding is <leader>KB or <leader>KE to search for last error. Also :HowIn javascrip will search for javascript version of current line
 Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
 "more functionality. Also includes an explorer 'coc-explorer
-" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh
+" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs
 " Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'. Currently disabled because of incompatibility with coc plugin
-" Plug 'codota/tabnine-vim' " Code completion ai. Builds on top of YouCompleteMe plugin. Coc integration with coc-tabnine extenstion
+" Plug 'codota/tabnine-vim' " Code completion ai. Builds on top of YouCompleteMe plugin. Coc integration with coc-tabnine extenstion 
 "Plug 'ctrlpvim/ctrlp.vim' " An alternative would be fzf
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "An alternative to ctrlp fuzzy finder. Also install ag and ripgrep on your system
 Plug 'junegunn/fzf.vim' " Wrappers and commands for fzf in vim
@@ -96,8 +97,9 @@ set ignorecase
 set incsearch
 set belloff=all
 " Tab settings
-set tabstop=4 softtabstop=4
-set shiftwidth=4
+set tabstop=2 softtabstop=2
+set shiftwidth=2
+set smarttab
 " Auto indentation
 set smartindent
 " If search contains capital letter search case sensitive otherwise case insensitve
@@ -180,8 +182,21 @@ endif
 "  \ 'file': '\v\.(exe|so|dll|class|swp)$',
 "  \ 'link': 'some_bad_symbolic_links',
 "  \ }
-let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
-let $FZF_DEFAULT_OPTS='--reverse'
+let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
+let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
+let $FZF_DEFAULT_COMMAND='ag -g ""' 
+" Or use ripgrep instead of ag for fzf fuzzy file search
+"'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor}/*"'
+command! -bang -nargs=? -complete=dir Files
+    \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
+command! -bang -nargs=* GGrep
+  \ call fzf#vim#grep(
+  \   'git grep --line-number -- '.shellescape(<q-args>), 0,
+  \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
+command! -bang -nargs=* Rg
+  \ call fzf#vim#grep(
+  \   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+  \   fzf#vim#with_preview(), <bang>0)
 let mapleader=" "
 let g:sneak#label = 1
 " Tweaks for file browsing
@@ -237,7 +252,8 @@ nnoremap <silent> <Leader>- :vertical resize -5<CR>
 " fast lex commandleader
 nnoremap <leader>e :Lex<CR>
 " Project search with ripgrep
-nnoremap <leader>s :Rg<CR>
+nnoremap <leader>s :GGrep<CR>
+"nnoremap <silent> <C-p> :call fzf#run(fzf#wrap({'source': 'ag -g ""'}))<CR>
 nnoremap <silent> <C-p> :Files<CR>
 "Mapping for fzf-checkout Plugin for git commits
 nnoremap <Leader>gc :GCheckout<CR>
@@ -342,7 +358,7 @@ nnoremap <silent><nowait> <leader>cj  :<C-u>CocNext<CR>
 " Do default action for previous item.
 nnoremap <silent><nowait> <leader>ck  :<C-u>CocPrev<CR>
 " Resume latest coc list.
-"nnoremap <silent><nowait> <leader>p  :<C-u>CocListResume<CR>
+nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
 
 " Toggle panel with Tree Views
 nnoremap <silent> <leader>t :<C-u>CocCommand metals.tvp<CR>
