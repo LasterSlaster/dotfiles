@@ -31,3 +31,4 @@ alias cpv='rsync -ah --info=progress2'
 
 # move to trash bin
 alias trash='mv --force -t ~/.local/share/Trash '
+
