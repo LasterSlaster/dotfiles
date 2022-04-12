@@ -38,19 +38,21 @@ call plug#begin('~/.vim/plugged')
 	Plug 'tpope/vim-surround' " quickly edit surroundings (brackets, html tags, etc) -> ys[motion][character] to surround a motion with a character or cs[motion][character] to replace them with another one and ds to delete surrounding characters 
 	Plug 'mbbill/undotree' "Shows a history of all changes in the file as a tree. Binds to <leader>u
 	Plug 'dbeniamine/cheat.sh-vim' "Browse code snippets etc. from cheat.sh website. Binding is <leader>KB or <leader>KE to search for last error. Also :HowIn javascrip will search for javascript version of current line
-	Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
+	if has('nvim')
+		Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
+	endif
 	"more functionality. Also includes an explorer 'coc-explorer
 	" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "An alternative to ctrlp fuzzy finder. Also install ag and ripgrep on your system
 	Plug 'junegunn/fzf.vim' " Wrappers and commands for fzf in vim
 	Plug 'stsewd/fzf-checkout.vim' " fzf for git branch management
-	" TODO: Checkout these two plugins for improved movements. Also check out fzf for movements(FzfLines)
+	" TODO: Check out fzf for movements (FzfLines)
 	Plug 'justinmk/vim-sneak' "Simple two character movements. Binds to s with first two letters of search
 	Plug 'vim-airline/vim-airline' "Bottom status bar
 	Plug 'mhinz/vim-startify' " Displays recent files on vim startup
 	Plug 'liuchengxu/vim-which-key' "Show current key bindings
 	Plug 'bkad/CamelCaseMotion'
-	Plug 'voldikss/vim-floaterm' "An alternative would be akinsho/toggleterm.nvim
+	Plug 'voldikss/vim-floaterm' "An alternative would be akinsho/toggleterm.nvim or kassio/neoterm
 	Plug 'matze/vim-move' "Move lines and blocks of code
 	if has('nvim') || has('patch-8.0.902')
 		Plug 'mhinz/vim-signify'
