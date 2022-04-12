@@ -216,7 +216,7 @@ call plug#end()
 	" Format innerword at current cursor location to first letter uppercase and
 	" all following lower case e.g. 'Test'
 		function! FormatInnerWord()
-			normal guiw~
+			normal guiw~e
 		endfunction
 		nnoremap <silent> <Leader>fiw :call FormatInnerWord()<CR>
 
