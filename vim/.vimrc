@@ -274,13 +274,7 @@ call plug#end()
 	" If gruvbox plugin is install, sets gruvbox theme
 	let g:gruvbox_guisp_fallback = "bg"
 	colorscheme gruvbox
-" ---------------------------------------------------------------------------
-
-
-" ---------------------------------------------------------------------------
-" PLUGIN ONEDARK CONFIG
-" ---------------------------------------------------------------------------
-	"colorscheme onedark " Might be an alternative colorscheme for me
+	" Make backgound transparent
 	autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
 	set background=dark
 " ---------------------------------------------------------------------------
