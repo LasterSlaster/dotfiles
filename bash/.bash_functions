@@ -8,3 +8,8 @@ function cl() {
     # use your preferred ls command
         ls -alF --color=auto
 }
+
+mkcd ()
+{
+  mkdir -p -- "$1" && cd -P -- "$1"
+}
