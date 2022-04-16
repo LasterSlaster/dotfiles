@@ -3,21 +3,70 @@
 " ---------------------------------------------------------------------------
 " INSTALLATION:
 " ---------------------------------------------------------------------------
-" Install lazygit:
-"	 If lazygit is integrated in floaterm plugin and active you have to install
-"	 lazygit from https://github.com/jesseduffield/lazygit
-"
-"	Install ag/rg/ripgrep
-"
-"	CoC Installation
-"
-" install ctags with: sudo apt install universal-ctags
+" - Install lazygit:
+"	-  If lazygit is integrated in floaterm plugin and active you have to install
+"	-  lazygit from https://github.com/jesseduffield/lazygit
+"	- Install ag/rg/ripgrep
+"	- CoC Installation
+" - install ctags with: sudo apt install universal-ctags
 "
 " Initialize plugin system:
 "	 Reload .vimrc and :PlugInstall to install plugins. See https://github.com/junegunn/vim-plug
 "	 To uninstall a plugin remove its line reload vim and run :PlugClean. To update a plugin
 "	 run : PlugUpdate. To upgrade plug itself run :PlugUpgrade
 "	 Specify directory for plugins
+" ---------------------------------------------------------------------------
+" NOTES:
+" ---------------------------------------------------------------------------
+"  - Coc configuration
+"  - fzf configuration
+"  - Automatically change working dir to file location?
+"  - Consolidate all plugin commands and mappings
+"  - https://catswhocode.com/vim-commands/
+"  - Auto formatting and indentation?
+"
+" ---------------------------------------------------------------------------
+" COMMANDS:
+" ---------------------------------------------------------------------------
+" - :Plug...
+" - :Coc...
+" - :nohlsearch
+" - :source ~/.vimrc / %
+" - :sav filename	"Saves file as filename
+" - :50 "Move to line number 50
+" - :tab ball	"Puts all open files in tabs
+" - :tabnew [filename] "Open file in new tab
+" - :args "list files
+" - :1,10 w outfile	"Saves lines 1 to 10 in outfile
+" - :1,10 w >> outfile	"Appends lines 1 to 10 to outfile
+" - :r infile	"Insert the content of infile
+" - :23r infile	"Insert the content of infile under line 23
+" - :%s/\<./\u&/g	"Sets first letter of each word to uppercase
+" - :%s/old/new/gc	"Replace all occurences with confirmation
+" - :%s/onward/forward/gi	"Replace onward by forward, case unsensitive
+"   :g/string/d	"Delete all lines containing string
+" - :v/string/d	"Delete all lines containing which didn’t contain string
+" - :s/Bill/Steve/	"Replace the first occurence of Bill by Steve in current line
+" - :s/Bill/Steve/g	"Replace Bill by Steve in current line
+" - :%s/Bill/Steve/g	"Replace Bill by Steve in all the file
+" - set spell /nospell "Spell checking
+" - 50% "type 50% to move to line at 50% of file
+" - %	"Move cursor to matching parenthesis
+" - [[	"Jump to function start
+" - [{	"Jump to block start
+" - * "Search for word under cursor
+" - =%	"Indent the code between parenthesis
+" - gt "Move to next tab or use <Ctlr>+<pageup>/<pagedown>
+" - gf "Open file name under cursor
+" - Vu	"Lowercase line
+" - VU	"Uppercase line
+" - g~~	"Invert case
+" - vEU	"Switch word to uppercase
+" - vE~	"Modify word case
+" - ggguG	"Set all text to lowercase
+" - gggUG	"Set all text to uppercase
+" - Ctrl+a	"Increment number under the cursor
+" - Ctrl+x	"Decrement number under cursor
 
 " install plugin manager vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -108,6 +157,7 @@ call plug#end()
 	set incsearch
 	set belloff=all
 	" Tab settings
+	set expandtab
 	set tabstop=2 softtabstop=2
 	set shiftwidth=2
 	set smarttab
@@ -125,12 +175,25 @@ call plug#end()
 	set undodir=.undodir/,~/.undodir/,/tmp//
 	set scrolloff=8
 	set noshowmode
-
-	" Remap Esc to jk
-	inoremap jk <ESC>
-
-	" Allow saving of files as sudo when I forgot to start vim using sudo.
-	cmap w!! w !sudo tee > /dev/null %
+	set linebreak
+	set ruler
+	set cursorline
+	set noerrorbells
+	set visualbell
+	set mouse=a
+	set title
+	set confirm
+  set list
+  set listchars=tab:‣\ ,trail:· "Display trailing whitespaces and leading tabs
+  set clipboard=unnamedplus "Use system clipboard
+	
+	" CONFIGURATION FOR COC.NVIM
+	set nobackup " Some servers have issues with backup files
+	set nowritebackup
+	set updatetime=100 " You will have a bad experience with diagnostic messages with the default 4000.
+	set shortmess+=c " Don't give |ins-completion-menu| messages.
+	set signcolumn=yes " Always show signcolumns
+	au BufRead,BufNewFile *.sbt,*.sc set filetype=scala " Help Vim recognize *.sbt and *.sc as Scala files
 
 	" Search down into subfolders
 	" Provides tab-completion for all file-related tasks
@@ -164,6 +227,8 @@ call plug#end()
 	" - Use ^t to jump back up the tag stack
 	command! MakeTags !ctags -R .
 
+	command! Reloadvimrc source ~/.vimrc
+
 	" AUTOCOMPLETE:
 	" The good stuff is documented in |ins-completion|
 	" - ^x^n for JUST this file
@@ -180,6 +245,10 @@ call plug#end()
 	endif
 
 	" REMAPPINGS:
+	" Allow saving of files as sudo when I forgot to start vim using sudo.
+	cmap w!! w !sudo tee > /dev/null %
+	" Remap Esc to jk
+	inoremap jk <ESC>
 	" Remap switching between windows
 	nnoremap <leader>h :wincmd h<CR>
 	nnoremap <leader>j :wincmd j<CR>
@@ -201,19 +270,21 @@ call plug#end()
 	vnoremap < <gv
 	vmap <Tab> >
 	vmap <S-Tab> <
-
 	nnoremap <silent> <Leader>+ :vertical resize +5<CR>
 	nnoremap <silent> <Leader>- :vertical resize -5<CR>
 	" fast lex commandleader
 	nnoremap <leader>e :Lex<CR>
+  " Move between tabs
+  nnoremap <leader>1 :tabnext 1<CR>
+  nnoremap <leader>2 :tabnext 2<CR>
+  nnoremap <leader>3 :tabnext 3<CR>
+  nnoremap <leader>4 :tabnext e<CR>
+  nnoremap <leader>5 :tabnext 5<CR>
+  nnoremap <leader>6 :tabnext 6<CR>
+  nnoremap <leader>7 :tabnext 7<CR>
+  nnoremap <leader>8 :tabnext 8<CR>
+  nnoremap <leader>9 :tabnext 9<CR>
 
-	" CONFIGURATION FOR COC.NVIM
-	set nobackup " Some servers have issues with backup files
-	set nowritebackup
-	set updatetime=100 " You will have a bad experience with diagnostic messages with the default 4000.
-	set shortmess+=c " Don't give |ins-completion-menu| messages.
-	set signcolumn=yes " Always show signcolumns
-	au BufRead,BufNewFile *.sbt,*.sc set filetype=scala " Help Vim recognize *.sbt and *.sc as Scala files
 	
 	" FUNCTIONS:
 	" Format innerword at current cursor location to first letter uppercase and
@@ -247,14 +318,14 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN VIM-MOVE CONFIG:
+" PLUGIN VIM MOVE CONFIG:
 " ---------------------------------------------------------------------------
 	let g:move_key_modifier_visualmode='S'
 " ---------------------------------------------------------------------------
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN VIM-SNEAK CONFIG:
+" PLUGIN VIM SNEAK CONFIG:
 " ---------------------------------------------------------------------------
 	let g:sneak#label = 1
 " ---------------------------------------------------------------------------
@@ -282,7 +353,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN VIM-WHICH-KEY CONFIG:
+" PLUGIN VIM WHICH KEY CONFIG:
 " ---------------------------------------------------------------------------
 	" keymapping for vim-which-key plugin
 	nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
@@ -321,12 +392,15 @@ call plug#end()
 		\   fzf#vim#with_preview(), <bang>0)
 
 	" Project search with ripgrep
-	nnoremap <leader>s :GGrep<CR>
+	nnoremap <leader>s :Rg<CR>
 	"nnoremap <silent> <C-p> :call fzf#run(fzf#wrap({'source': 'ag -g ""'}))<CR>
 	nnoremap <silent> <C-p> :Files<CR>
 	"Mapping for fzf-checkout Plugin for git commits
 	nnoremap <Leader>gc :GCheckout<CR>
-	nmap <leader>gs :G<CR>
+	nnoremap <leader>gs :G<CR>
+	nnoremap <leader>B :Buffer<CR>
+	nnoremap <leader>H :History<CR>
+	nnoremap <leader>gb :GBranches<CR>
 
 	if has('nvim')
 		"Exit fzf floating window and terminal with Esc
