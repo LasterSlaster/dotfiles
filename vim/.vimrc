@@ -1,7 +1,7 @@
 " Reload vimrc commands: ":so $MYVIMRC" or ":source ~/.vimrc" or ":so %"
 "
 " ---------------------------------------------------------------------------
-" INSTALLATION
+" INSTALLATION:
 " ---------------------------------------------------------------------------
 " Install lazygit:
 "	 If lazygit is integrated in floaterm plugin and active you have to install
@@ -60,6 +60,7 @@ call plug#begin('~/.vim/plugged')
 		Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
 	endif
 
+	"Plug 'metakirby5/codi.vim' a scratchpad for hackers. REPL
 	"Plug 'kassio/neoterm' "Terminal plugin. Integrate into to floaterm and use instead of default terminal?
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
 	"Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'. Currently disabled because of incompatibility with coc plugin
@@ -88,7 +89,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" CUSTOM CONFIG
+" CUSTOM CONFIG:
 " ---------------------------------------------------------------------------
 	" Read file changes if open files have been changed by another program e.g. git pull
 	set autoread
@@ -226,23 +227,41 @@ call plug#end()
 	
 " ---------------------------------------------------------------------------
 
+" ---------------------------------------------------------------------------
+" PLUGIN STARTIFY CONFIG:
+" ---------------------------------------------------------------------------
+" USAGE: Commands start with :S like :SSave to save a session. To start
+" Startify use :Startify
+	let g:startify_lists = [
+						\ { 'type': 'files',     'header': ['   Files']            },
+						\ { 'type': 'dir',       'header': ['   Current Dir '. getcwd()] },
+						\ { 'type': 'sessions',  'header': ['   Sessions']       },
+						\ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+						\ { 'type': 'commands',  'header': ['   Commands']       },
+						\ ]
+	 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/.bashrc' ]
+	 let g:startify_session_persistence = 0
+	 let g:startify_session_autoload = 0
+	 let g:startify_session_dir = '~/.config/nvim/session'
+" ---------------------------------------------------------------------------
+
 
 " ---------------------------------------------------------------------------
-" PLUGIN VIM-MOVE CONFIG
+" PLUGIN VIM-MOVE CONFIG:
 " ---------------------------------------------------------------------------
 	let g:move_key_modifier_visualmode='S'
 " ---------------------------------------------------------------------------
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN VIM-SNEAK CONFIG
+" PLUGIN VIM-SNEAK CONFIG:
 " ---------------------------------------------------------------------------
 	let g:sneak#label = 1
 " ---------------------------------------------------------------------------
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN UNDOTREE CONFIG
+" PLUGIN UNDOTREE CONFIG:
 " ---------------------------------------------------------------------------
 	nnoremap <leader>u :UndotreeShow<CR>
 	
@@ -263,7 +282,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN VIM-WHICH-KEY CONFIG
+" PLUGIN VIM-WHICH-KEY CONFIG:
 " ---------------------------------------------------------------------------
 	" keymapping for vim-which-key plugin
 	nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
@@ -271,7 +290,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN GRUVBOX CONFIG
+" PLUGIN GRUVBOX CONFIG:
 " ---------------------------------------------------------------------------
 	" If gruvbox plugin is install, sets gruvbox theme
 	let g:gruvbox_guisp_fallback = "bg"
@@ -283,7 +302,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN FZF CONFIG
+" PLUGIN FZF CONFIG:
 " ---------------------------------------------------------------------------
 	let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 	let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
@@ -318,7 +337,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN FLOATERM CONFIG
+" PLUGIN FLOATERM CONFIG:
 " ---------------------------------------------------------------------------
 	let g:floaterm_keymap_toggle = '<leader>;'
 	let g:floaterm_keymap_new = '<c-t>'
@@ -328,7 +347,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN CAMELCASEMOTION CONFIG
+" PLUGIN CAMELCASEMOTION CONFIG:
 " ---------------------------------------------------------------------------
 	map <silent> w <Plug>CamelCaseMotion_w
 	map <silent> b <Plug>CamelCaseMotion_b
@@ -342,7 +361,7 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN COC CONFIG
+" PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
 	nmap <Leader>calc <Plug>(coc-calc-result-append)
 		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
@@ -467,12 +486,12 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" CURRENTLY UNUSED CONFIG
+" CURRENTLY UNUSED CONFIG:
 " ---------------------------------------------------------------------------
 "
 "
 " ---------------------------------------------------------------------------
-" PLUGIN COC CONFIG
+" PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
 "  Used in the tab autocompletion for coc
 "	 function! s:check_back_space() abort
@@ -500,7 +519,7 @@ call plug#end()
 "
 "
 " ---------------------------------------------------------------------------
-" PLUGIN YOUCOMPLETEME SETTINGS
+" PLUGIN YOUCOMPLETEME SETTINGS:
 " ---------------------------------------------------------------------------
 "	let g:ycm_auto_hover='CursorHold'
 "	
@@ -540,7 +559,7 @@ call plug#end()
 "
 "
 " ---------------------------------------------------------------------------
-" CUSTOM TERMINAL
+" CUSTOM TERMINAL:
 " ---------------------------------------------------------------------------
 " if has('nvim')
 " 	nnoremap <silent> <Leader>ter :botright split<CR>:terminal<CR>gi
