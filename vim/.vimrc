@@ -24,12 +24,14 @@
 "  - Consolidate all plugin commands and mappings
 "  - https://catswhocode.com/vim-commands/
 "  - Auto formatting and indentation?
+"  - Checkout vim build-in sessions :mksession
 "
 " ---------------------------------------------------------------------------
 " COMMANDS:
 " ---------------------------------------------------------------------------
 " - :Plug...
 " - :Coc...
+" - :S... like SLoad to load a Startify session
 " - :nohlsearch
 " - :source ~/.vimrc / %
 " - :sav filename	"Saves file as filename
@@ -124,6 +126,7 @@ call plug#begin('~/.vim/plugged')
 	"Plug 'lyuts/vim-rtags' "Probably I don't need this anymore
 	"Plug 'jremmen/vim-ripgrep' "Also 'apt install ripgrep'?
 	"Plug 'mileszs/ack.vim' "A search tool. Could be used in addition with fd command
+  "Plug 'vifm/vifm.vim' "File explorer
 	"Plug 'preservim/nerdtree' an alternative file explorer to the default netrw Or look for a better option. maybe one that integrates into floaterm!
 	"Plug 'justinmk/vim-dirvish' another file explorer but very lightweight
 	"Plug 'francoiscabrol/ranger.vim' "Plug 'rbgrouleff/bclose.vim' Required for ranger plugin in nvim! File Explorer. Or try floaterm integration
@@ -311,9 +314,14 @@ call plug#end()
 						\ { 'type': 'commands',  'header': ['   Commands']       },
 						\ ]
 	 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/.bashrc' ]
-	 let g:startify_session_persistence = 0
-	 let g:startify_session_autoload = 0
+	 let g:startify_session_persistence = 1
+	 let g:startify_session_autoload = 1
+   let g:startify_session_delete_buffers = 1
+   let g:startify_change_to_vcs_root = 1
+   let g:startify_fortune_use_unicode = 1
+   let g:startify_enable_special = 0
 	 let g:startify_session_dir = '~/.config/nvim/session'
+   nnoremap <leader><tab> :Startify<cr>
 " ---------------------------------------------------------------------------
 
 
