@@ -25,7 +25,6 @@
 "  - https://catswhocode.com/vim-commands/
 "  - Auto formatting and indentation?
 "  - Checkout vim build-in sessions :mksession
-"
 " ---------------------------------------------------------------------------
 " COMMANDS:
 " ---------------------------------------------------------------------------
@@ -193,6 +192,7 @@ call plug#end()
 	" CONFIGURATION FOR COC.NVIM
 	set nobackup " Some servers have issues with backup files
 	set nowritebackup
+	set timeoutlen=500
 	set updatetime=100 " You will have a bad experience with diagnostic messages with the default 4000.
 	set shortmess+=c " Don't give |ins-completion-menu| messages.
 	set signcolumn=yes " Always show signcolumns
@@ -249,7 +249,7 @@ call plug#end()
 
 	" REMAPPINGS:
 	" Allow saving of files as sudo when I forgot to start vim using sudo.
-	cmap w!! w !sudo tee > /dev/null %
+	cnoremap w!! w !sudo tee > /dev/null %
 	" Remap Esc to jk
 	inoremap jk <ESC>
 	" Remap switching between windows
@@ -265,15 +265,7 @@ call plug#end()
 	nnoremap <leader>w :w<CR>
 	" paste yanked word
 	nnoremap <leader>p "0p
-	" toggle search highlights 
-	nnoremap <F3> :set hlsearch!<CR>
-	set timeoutlen=500
-	" indent line/s
-	vnoremap > >gv
-	vnoremap < <gv
-	vmap <Tab> >
-	vmap <S-Tab> <
-	nnoremap <silent> <Leader>+ :vertical resize +5<CR>
+  nnoremap <silent> <Leader>+ :vertical resize +5<CR>
 	nnoremap <silent> <Leader>- :vertical resize -5<CR>
 	" fast lex commandleader
 	nnoremap <leader>e :Lex<CR>
@@ -287,6 +279,13 @@ call plug#end()
   nnoremap <leader>7 :tabnext 7<CR>
   nnoremap <leader>8 :tabnext 8<CR>
   nnoremap <leader>9 :tabnext 9<CR>
+	" toggle search highlights 
+	nnoremap <F3> :set hlsearch!<CR>
+	" indent line/s
+	vnoremap > >gv
+	vnoremap < <gv
+	vnoremap <Tab> >
+	vnoremap <S-Tab> <
 
 	
 	" FUNCTIONS:
@@ -446,7 +445,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
-	nmap <Leader>calc <Plug>(coc-calc-result-append)
+	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
 		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
 	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
 		\ fzf#wrap({'dir': expand('%:p:h')}))
@@ -459,17 +458,17 @@ call plug#end()
 	endif
 
 	" Use `[g` and `]g` to navigate diagnostics
-	nmap <silent> [g <Plug>(coc-diagnostic-prev)
-	nmap <silent> ]g <Plug>(coc-diagnostic-next)
+	noremap <silent> [g <Plug>(coc-diagnostic-prev)
+	nnoremap <silent> ]g <Plug>(coc-diagnostic-next)
 
 	" Remap keys for gotos
-	nmap <silent> gd <Plug>(coc-definition)
-	nmap <silent> gy <Plug>(coc-type-definition)
-	nmap <silent> gi <Plug>(coc-implementation)
-	nmap <silent> gr <Plug>(coc-references)
+	noremap <silent> gd <Plug>(coc-definition)
+	noremap <silent> gy <Plug>(coc-type-definition)
+	noremap <silent> gi <Plug>(coc-implementation)
+	noremap <silent> gr <Plug>(coc-references)
 
 	" Used to expand decorations in worksheets Original mapping was ws
-	nmap <Leader>dec <Plug>(coc-metals-expand-decoration) 
+	noremap <Leader>dec <Plug>(coc-metals-expand-decoration) 
 
 	" To move into the floating window press <c-w>p
 	function! s:show_documentation()
@@ -524,20 +523,20 @@ call plug#end()
 	nnoremap <silent> <leader>tf :<C-u>CocCommand metals.revealInTreeView metalsPackages<CR>
 
 	" Remap for rename current word
-	nmap <leader>rn <Plug>(coc-rename)
+	noremap <leader>rn <Plug>(coc-rename)
 	"
 	" Remap for format selected region
 	xmap <leader>f  <Plug>(coc-format-selected)
-	nmap <leader>f  <Plug>(coc-format-selected)
+	noremap <leader>f  <Plug>(coc-format-selected)
 
 	" Applying codeAction to the selected region.
 	" Example: `<leader>aap` for current paragraph
 	xmap <leader>a  <Plug>(coc-codeaction-selected)
-	nmap <leader>a  <Plug>(coc-codeaction-selected)
+	noremap <leader>a  <Plug>(coc-codeaction-selected)
 	" Remap keys for applying codeAction to the current buffer.
-	nmap <leader>ac  <Plug>(coc-codeaction)
+	noremap <leader>ac  <Plug>(coc-codeaction)
 	" Apply AutoFix to problem on the current line.
-	nmap <leader>af  <Plug>(coc-fix-current)
+	noremap <leader>af  <Plug>(coc-fix-current)
 	" Trigger for code actions
 	" Make sure `"codeLens.enable": true` is set in your coc config
 	nnoremap <leader>cl :<C-u>call CocActionAsync('codeLensAction')<CR>
