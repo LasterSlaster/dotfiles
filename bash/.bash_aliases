@@ -32,4 +32,22 @@ alias cpv='rsync -ah --info=progress2'
 # move to trash bin
 alias trash='mv --force -t ~/.local/share/Trash '
 
+# always prompt before removing files
 alias rm='rm -i'
+
+# open vimrc
+alias vimrc='nvim ~/.vimrc'
+
+# open bashrc
+alias bashrc='nvim ~/.bashrc'
+
+# git
+alias ginit='git init'
+alias gadd='git add'
+alias gstat='git status'
+alias glog='git log'
+alias gmain='git checkout main'
+alias gmaster='git checkout master'
+alias gout='git checkout'
+alias gbranch='git checkout -b'
+alias gres='git restore'
