@@ -424,7 +424,8 @@ call plug#end()
 	let g:floaterm_keymap_toggle = '<leader>;'
 	let g:floaterm_keymap_new = '<c-t>'
 	let g:floaterm_keymap_next = '<c-n>'
-	nnoremap <silent> <leader>gg :FloatermNew lazygit<CR> " TODO: Also checkout LazyDocker
+" TODO: Also checkout LazyDocker
+	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
 " ---------------------------------------------------------------------------
 
 
