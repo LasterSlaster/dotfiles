@@ -22,9 +22,9 @@
 "  - fzf configuration
 "  - Automatically change working dir to file location?
 "  - Consolidate all plugin commands and mappings
-"  - https://catswhocode.com/vim-commands/
 "  - Auto formatting and indentation?
 "  - Checkout vim build-in sessions :mksession
+"  - https://catswhocode.com/vim-commands/
 " ---------------------------------------------------------------------------
 " COMMANDS:
 " ---------------------------------------------------------------------------
@@ -50,7 +50,16 @@
 " - :s/Bill/Steve/	"Replace the first occurence of Bill by Steve in current line
 " - :s/Bill/Steve/g	"Replace Bill by Steve in current line
 " - :%s/Bill/Steve/g	"Replace Bill by Steve in all the file
+" - :HowIn [language] "Cheat-vim: search for howto for current line
+" - :GV "Git commit browser
+" - :g/todo/ "Comment all lines with todo in it
+" - :Reloadvimrc "Trys to source vimrc from ~/.vimrc
+" - :Format "Format current buffer
+" - :Fold "Fold current buffer
+" - :OR "Organize imports
+"
 " - set spell /nospell "Spell checking
+"
 " - 50% "type 50% to move to line at 50% of file
 " - %	"Move cursor to matching parenthesis
 " - [[	"Jump to function start
@@ -68,6 +77,38 @@
 " - gggUG	"Set all text to uppercase
 " - Ctrl+a	"Increment number under the cursor
 " - Ctrl+x	"Decrement number under cursor
+" - <esc><esc> "Cloase floaterm
+" - <A-]> "Send <esc> key to program in terminal
+" - <C-t> "Open new terminal session in floaterm
+" - <C-n> "Switch between floaterm tabs
+"   session. When open close window.
+" - ys[motion][character] "Surround a motion with a character
+" - cs[motion][character] "Replace a character around a motion
+"   ds[motion][character] "Deleta a character around a motion
+" - gc "In visual mode toggels commenting of highlighted region
+" - gcc "Toggle commenting a line
+" - gcap "Toggle commenting a paragraph
+" - gcgc "Uncomment block
+" - cx[motion] "Exchange two motions with each other. cxx to replace two lines
+" - <F3> "Toggle highlight search
+" - w!! "Sudo write
+" - jk "Remapping for <ESC>
+" - <C-p> "Search all project files
+" - <c-space> "Trigger auto-completion
+" - [g and ]g "Navigate diagnostics
+" - gd "<Plug>(coc-definition)
+" - gy "<Plug>(coc-type-definition)
+" - gi "<Plug>(coc-implementation)
+" - gr "<Plug>(coc-references)
+" - <C-f> "Scroll forward in coc window
+" - <C-b> "Scroll backwards in coc window
+" - K  "Show documentation
+" - <leader>KB or <leader>KE "Cheat-vim search for last error
+" - <leader>; "Toggle floaterm window. Open if existing otherwise create a new
+" - <leader>u "Open undotree
+" - <leader><tab> "Open Startify
+" ????? inoremap <expr> <c-x><c-f> fzf#vim#complete#path( \ fzf#wrap({'dir': expand('%:p:h')}))
+
 
 " install plugin manager vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -252,10 +293,6 @@ call plug#end()
 	cnoremap w!! w !sudo tee > /dev/null %
 	" Remap Esc to jk
 	inoremap jk <ESC>
-  " Remap Esc in terminal mode
-  " This way Esc key can be send to underlying program in termeinal
-  tnoremap <Esc> <C-\><C-n>
-  tnoremap <A-]> <Esc>
 	" Remap switching between windows
 	nnoremap <leader>h :wincmd h<CR>
 	nnoremap <leader>j :wincmd j<CR>
@@ -407,7 +444,7 @@ call plug#end()
 	"nnoremap <silent> <C-p> :call fzf#run(fzf#wrap({'source': 'ag -g ""'}))<CR>
 	nnoremap <silent> <C-p> :Files<CR>
 	"Mapping for fzf-checkout Plugin for git commits
-	nnoremap <Leader>gc :GCheckout<CR>
+	nnoremap <leader>gc :GCheckout<CR>
 	nnoremap <leader>gs :G<CR>
 	nnoremap <leader>B :Buffer<CR>
 	nnoremap <leader>H :History<CR>
@@ -428,8 +465,12 @@ call plug#end()
 	let g:floaterm_keymap_new = '<c-t>'
 	let g:floaterm_keymap_next = '<c-n>'
 " TODO: Also checkout LazyDocker
-	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
   " Use key mapping <A-]> to send the <esc> key to the terminal
+	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
+  " This way Esc key can be send to underlying program in termeinal
+  tnoremap <A-]> <Esc>
+  " Close floaterm with <esc> in normal mode 
+  au! FileType floaterm nnoremap <buffer> <Esc> <C-\><C-n>:q<cr>
 " ---------------------------------------------------------------------------
 
 
