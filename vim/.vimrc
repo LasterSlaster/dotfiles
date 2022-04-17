@@ -425,7 +425,7 @@ call plug#end()
 	let g:floaterm_keymap_next = '<c-n>'
 " TODO: Also checkout LazyDocker
 	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
-  autocmd FileType floaterm nnoremap <buffer> <Esc> :q<cr>
+  autocmd FileType floaterm tnoremap <buffer> <Esc> :q<cr>
 " ---------------------------------------------------------------------------
 
 
