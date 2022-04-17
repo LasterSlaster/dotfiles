@@ -1,0 +1,8 @@
+{
+	"metals.statusBarEnabled": true,
+	"metals.superMethodLensesEnabled": true,
+	"codeLens.enable": true,
+	"suggest.enablePreview": true,
+	"suggest.enablePreselect": false,
+	"suggest.noselect": true
+}
