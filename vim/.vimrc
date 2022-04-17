@@ -18,8 +18,9 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
-"  - Coc configuration
-"  - fzf configuration
+"  - Coc configuration, coc-explorer, coc-movements? Coc plugin installtion
+"  script?
+"  - fzf configuration, FzfLines
 "  - Automatically change working dir to file location?
 "  - Consolidate all plugin commands and mappings
 "  - Auto formatting and indentation?
@@ -29,8 +30,9 @@
 " COMMANDS:
 " ---------------------------------------------------------------------------
 " - :Plug...
-" - :Coc...
+" - :Coc...":CocConfig
 " - :S... like SLoad to load a Startify session
+" - :mksession "Save a vim session
 " - :nohlsearch
 " - :source ~/.vimrc / %
 " - :sav filename	"Saves file as filename
@@ -107,6 +109,8 @@
 " - <leader>; "Toggle floaterm window. Open if existing otherwise create a new
 " - <leader>u "Open undotree
 " - <leader><tab> "Open Startify
+" - [c and]c "Git-Gutter: Jump between hunks. Preview, stage, undo <leader>hp/hs/hu. :wincmd P jump to preview window
+" - zh "Only in coc-explorer. Shows hidden files
 " ????? inoremap <expr> <c-x><c-f> fzf#vim#complete#path( \ fzf#wrap({'dir': expand('%:p:h')}))
 
 
@@ -133,7 +137,7 @@ call plug#begin('~/.vim/plugged')
 		Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
 	endif
 	"more functionality. Also includes an explorer 'coc-explorer
-	" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs
+	" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs, coc-explorer
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "An alternative to ctrlp fuzzy finder. Also install ag and ripgrep on your system
 	Plug 'junegunn/fzf.vim' " Wrappers and commands for fzf in vim
 	Plug 'stsewd/fzf-checkout.vim' " fzf for git branch management
@@ -145,32 +149,31 @@ call plug#begin('~/.vim/plugged')
 	Plug 'bkad/CamelCaseMotion'
 	Plug 'voldikss/vim-floaterm' "An alternative would be akinsho/toggleterm.nvim or kassio/neoterm
 	Plug 'matze/vim-move' "Move lines and blocks of code
-	if has('nvim') || has('patch-8.0.902')
-		Plug 'mhinz/vim-signify'
-	else
-		Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
-	endif
+  Plug 'airblade/vim-gitgutter' "Alternative to vim-signify. Show git signs in your code
 
-	"Plug 'metakirby5/codi.vim' a scratchpad for hackers. REPL
-	"Plug 'kassio/neoterm' "Terminal plugin. Integrate into to floaterm and use instead of default terminal?
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
 	"Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'. Currently disabled because of incompatibility with coc plugin
 	"Plug 'codota/tabnine-vim' " Code completion ai. Builds on top of YouCompleteMe plugin. Coc integration with coc-tabnine extenstion 
 	"Plug 'ctrlpvim/ctrlp.vim' " An alternative would be fzf
 	"Plug 'Raimondi/delimitMate' "Automatic closing of quotes etc. Currently disabled in favor of coc-pairs
+  "Plug 'lyuts/vim-rtags' "Probably I don't need this anymore
+	"Plug 'metakirby5/codi.vim' a scratchpad for hackers. REPL
+	"Plug 'kassio/neoterm' "Terminal plugin. Integrate into to floaterm and use instead of default terminal?
 	"Plug 'nvim-lua/plenary.nvim' "Required for telescope plugin
 	"Plug 'nvim-telescope/telescope.nvim' "A fuzzy finder. Alternative to fzf? Requires version 0.6 but I have 0.4...
-	"Plug 'airblade/vim-gitgutter' "Show git signs in your code
+  "if has('nvim') || has('patch-8.0.902') Plug 'mhinz/vim-signify' else Plug 'mhinz/vim-signify', { 'branch': 'legacy' } endif
 	"Plug 'iberianpig/tig-explorer.vim' "Git integration. Alternative to fugitive?
 	"Plug 'rbgrouleff/bclose.vim' "Required for tig-explorer in neovim
-	"Plug 'lyuts/vim-rtags' "Probably I don't need this anymore
 	"Plug 'jremmen/vim-ripgrep' "Also 'apt install ripgrep'?
 	"Plug 'mileszs/ack.vim' "A search tool. Could be used in addition with fd command
-  "Plug 'vifm/vifm.vim' "File explorer
+  "
+  "Plug 'mcchrish/nnn.vim' File explorer
+  "Plug 'vifm/vifm.vim' "File explorer. Or use floaterm wrapper
 	"Plug 'preservim/nerdtree' an alternative file explorer to the default netrw Or look for a better option. maybe one that integrates into floaterm!
 	"Plug 'justinmk/vim-dirvish' another file explorer but very lightweight
 	"Plug 'francoiscabrol/ranger.vim' "Plug 'rbgrouleff/bclose.vim' Required for ranger plugin in nvim! File Explorer. Or try floaterm integration
-	"Plug 'SirVer/ultisnips' "Code snippets
+  "
+	"Plug 'SirVer/ultisnips' "Code snippets. Compare with cheat.sh-vim
 	"Plug 'junegunn/vim-easy-align' " Format hunks of code by row
 	"Plug 'sbdchd/neoformat' "Code formatting
 	"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} "Extended code highlighting
@@ -309,7 +312,7 @@ call plug#end()
   nnoremap <silent> <Leader>+ :vertical resize +5<CR>
 	nnoremap <silent> <Leader>- :vertical resize -5<CR>
 	" fast lex commandleader
-	nnoremap <leader>e :Lex<CR>
+	"nnoremap <leader>e :Lex<CR> Currently replaced by coc-explorer
   " Move between tabs
   nnoremap <leader>1 :tabnext 1<CR>
   nnoremap <leader>2 :tabnext 2<CR>
@@ -340,6 +343,16 @@ call plug#end()
 	" TODO: Write a function that creates a variable amount of new lines
 	
 " ---------------------------------------------------------------------------
+
+
+" ---------------------------------------------------------------------------
+" PLUGIN GIT GUTTER CONFIG:
+" ---------------------------------------------------------------------------
+  nmap <leader>ghs <Plug>(GitGutterStageHunk)
+  nmap <leader>ghu <Plug>(GitGutterUndoHunk)
+  nmap <leader>ghp <Plug>(GitGutterPreviewHunk)
+" ---------------------------------------------------------------------------
+
 
 " ---------------------------------------------------------------------------
 " PLUGIN STARTIFY CONFIG:
@@ -491,6 +504,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
+  nnoremap <leader>e <Cmd>CocCommand explorer<CR>
 	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
 		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
 	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
