@@ -252,6 +252,10 @@ call plug#end()
 	cnoremap w!! w !sudo tee > /dev/null %
 	" Remap Esc to jk
 	inoremap jk <ESC>
+  " Remap Esc in terminal mode
+  " This way Esc key can be send to underlying program in termeinal
+  tnoremap <Esc> <C-\><C-n>
+  tnoremap <A-]> <Esc>
 	" Remap switching between windows
 	nnoremap <leader>h :wincmd h<CR>
 	nnoremap <leader>j :wincmd j<CR>
@@ -425,6 +429,7 @@ call plug#end()
 	let g:floaterm_keymap_next = '<c-n>'
 " TODO: Also checkout LazyDocker
 	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
+  " Use key mapping <A-]> to send the <esc> key to the terminal
 " ---------------------------------------------------------------------------
 
 
