@@ -18,8 +18,9 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - Look for flutter/dart plugins
 "  - Coc configuration, coc-explorer, coc-movements? Coc plugin installtion
-"  script?
+"  script? let g:coc_global_extensions
 "  - fzf configuration, FzfLines
 "  - Automatically change working dir to file location?
 "  - Consolidate all plugin commands and mappings
@@ -109,7 +110,7 @@
 " - <leader>; "Toggle floaterm window. Open if existing otherwise create a new
 " - <leader>u "Open undotree
 " - <leader><tab> "Open Startify
-" - [c and]c "Git-Gutter: Jump between hunks. Preview, stage, undo <leader>hp/hs/hu. :wincmd P jump to preview window
+" - [c and]c "Git-Gutter: Jump between hunks. Preview, stage, undo <leader>ghp/ghs/ghu. :wincmd P jump to preview window
 " - zh "Only in coc-explorer. Shows hidden files
 " ????? inoremap <expr> <c-x><c-f> fzf#vim#complete#path( \ fzf#wrap({'dir': expand('%:p:h')}))
 
@@ -150,7 +151,9 @@ call plug#begin('~/.vim/plugged')
 	Plug 'voldikss/vim-floaterm' "An alternative would be akinsho/toggleterm.nvim or kassio/neoterm
 	Plug 'matze/vim-move' "Move lines and blocks of code
   Plug 'airblade/vim-gitgutter' "Alternative to vim-signify. Show git signs in your code
+  Plug 'ap/vim-css-color' "CSS color preview
 
+  "Plug 'ryanoasis/vim-devicons' "Icons for explorer. Nerdfont. set encoding=utf-8
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
 	"Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'. Currently disabled because of incompatibility with coc plugin
 	"Plug 'codota/tabnine-vim' " Code completion ai. Builds on top of YouCompleteMe plugin. Coc integration with coc-tabnine extenstion 
@@ -187,6 +190,7 @@ call plug#end()
 " CUSTOM CONFIG:
 " ---------------------------------------------------------------------------
 	" Read file changes if open files have been changed by another program e.g. git pull
+  set encoding=UTF-8
 	set autoread
 	set autoindent
 	set splitbelow
@@ -366,7 +370,8 @@ call plug#end()
 						\ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
 						\ { 'type': 'commands',  'header': ['   Commands']       },
 						\ ]
-	 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/.bashrc' ]
+
+	 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/config/nvim/coc-settings.json', '~/.bashrc' ]
 	 let g:startify_session_persistence = 1
 	 let g:startify_session_autoload = 1
    let g:startify_session_delete_buffers = 1

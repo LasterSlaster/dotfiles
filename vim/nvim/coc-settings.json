@@ -4,5 +4,7 @@
 	"codeLens.enable": true,
 	"suggest.enablePreview": true,
 	"suggest.enablePreselect": false,
-	"suggest.noselect": true
+	"suggest.noselect": true,
+  "explorer.file.showHiddenFiles": true,
+  "explorer.position": "floating"
 }
