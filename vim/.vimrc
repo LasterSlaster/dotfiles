@@ -1,8 +1,10 @@
-" Reload vimrc commands: ":so $MYVIMRC" or ":source ~/.vimrc" or ":so %"
-"
 " ---------------------------------------------------------------------------
 " INSTALLATION:
 " ---------------------------------------------------------------------------
+"   Follow these instructions to setup this vimrc configuration for a new
+"   machine and make sure that all dependencies to system programms are
+"   installed
+" - Install bat
 " - Install lazygit:
 "	-  If lazygit is integrated in floaterm plugin and active you have to install
 "	-  lazygit from https://github.com/jesseduffield/lazygit
@@ -15,26 +17,27 @@
 "	 To uninstall a plugin remove its line reload vim and run :PlugClean. To update a plugin
 "	 run : PlugUpdate. To upgrade plug itself run :PlugUpgrade
 "	 Specify directory for plugins
+"
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
-"  - Look for flutter/dart plugins
-"  - Coc configuration, coc-explorer, coc-movements? Coc plugin installtion
-"  script? let g:coc_global_extensions
-"  - fzf configuration, FzfLines
-"  - Automatically change working dir to file location?
-"  - Consolidate all plugin commands and mappings
-"  - Auto formatting and indentation?
+"  - Coc configuration: Checkout coc-git, coc-python is not maintained anymore
+"  replace with coc-pylsp or coc-jedi?
+"  - Auto formatting and indentation? -> coc?
+"  - Install and use watchman for automating tasks on file changes?
 "  - Checkout vim build-in sessions :mksession
 "  - https://catswhocode.com/vim-commands/
+"
 " ---------------------------------------------------------------------------
 " COMMANDS:
 " ---------------------------------------------------------------------------
+" - Relmad vimrc commands: ":so $MYVIMRC" or ":source ~/.vimrc" or ":so %"
 " - :Plug...
 " - :Coc...":CocConfig
 " - :S... like SLoad to load a Startify session
 " - :mksession "Save a vim session
 " - :nohlsearch
+" - :cd %:p:h "Change working directory to directory of current file
 " - :source ~/.vimrc / %
 " - :sav filename	"Saves file as filename
 " - :50 "Move to line number 50
@@ -60,11 +63,24 @@
 " - :Format "Format current buffer
 " - :Fold "Fold current buffer
 " - :OR "Organize imports
+" - :Colors "Fzf Command to display vim colorschemes
+" - :GFiles? "Fzf Command to display Git files (git status)
+" - :BLines [QUERY] 	"Fzf Command to search for text in Lines in the current buffer
+" - :Lines [QUERY] 	"Fzf Command to search for text in Lines 
+" - :History 	"Fzf command to display v:oldfiles and open buffers
+" - :History: 	"Fzf Command to display Command history
+" - :History/ 	"Fzf Command to display Search history
+" - :Snippets 	"Fzf Command to display Snippets (UltiSnips)
+" - :BCommits 	"Fzf Command to display Git commits for the current buffer; visual-select lines to track changes in the range
+" - :Commands 	"Fzf Command to display Vim Commands
+" - :Maps 	"Fzf Command to display Normal mode mappings
+" - :Helptags 	Help tags 1
 "
 " - set spell /nospell "Spell checking
 "
 " - 50% "type 50% to move to line at 50% of file
 " - %	"Move cursor to matching parenthesis
+" - ? "In coc-explorer view shows keybindings for file explorer actions
 " - [[	"Jump to function start
 " - [{	"Jump to block start
 " - * "Search for word under cursor
@@ -113,6 +129,7 @@
 " - [c and]c "Git-Gutter: Jump between hunks. Preview, stage, undo <leader>ghp/ghs/ghu. :wincmd P jump to preview window
 " - zh "Only in coc-explorer. Shows hidden files
 " ????? inoremap <expr> <c-x><c-f> fzf#vim#complete#path( \ fzf#wrap({'dir': expand('%:p:h')}))
+" ---------------------------------------------------------------------------
 
 
 " install plugin manager vim-plug
@@ -134,15 +151,17 @@ call plug#begin('~/.vim/plugged')
 	Plug 'tpope/vim-surround' " quickly edit surroundings (brackets, html tags, etc) -> ys[motion][character] to surround a motion with a character or cs[motion][character] to replace them with another one and ds to delete surrounding characters 
 	Plug 'mbbill/undotree' "Shows a history of all changes in the file as a tree. Binds to <leader>u
 	Plug 'dbeniamine/cheat.sh-vim' "Browse code snippets etc. from cheat.sh website. Binding is <leader>KB or <leader>KE to search for last error. Also :HowIn javascrip will search for javascript version of current line
+  Plug 'SirVer/ultisnips' "Code snippets. Compare with cheat.sh-vim. Also used in fzf and coc
+  Plug 'honza/vim-snippets' "Provides snippets for ultisnips
 	if has('nvim')
 		Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
+    "For more coc extensions checkout https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions
+    " For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs, coc-explorer, coc-flutter, coc-rome(instead/addition to coc-tsserver?), coc-spell-checker, coc-json
 	endif
-	"more functionality. Also includes an explorer 'coc-explorer
-	" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs, coc-explorer
+  Plug 'dart-lang/dart-vim-plugin'
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "An alternative to ctrlp fuzzy finder. Also install ag and ripgrep on your system
 	Plug 'junegunn/fzf.vim' " Wrappers and commands for fzf in vim
 	Plug 'stsewd/fzf-checkout.vim' " fzf for git branch management
-	" TODO: Check out fzf for movements (FzfLines)
 	Plug 'justinmk/vim-sneak' "Simple two character movements. Binds to s with first two letters of search
 	Plug 'vim-airline/vim-airline' "Bottom status bar
 	Plug 'mhinz/vim-startify' " Displays recent files on vim startup
@@ -176,7 +195,6 @@ call plug#begin('~/.vim/plugged')
 	"Plug 'justinmk/vim-dirvish' another file explorer but very lightweight
 	"Plug 'francoiscabrol/ranger.vim' "Plug 'rbgrouleff/bclose.vim' Required for ranger plugin in nvim! File Explorer. Or try floaterm integration
   "
-	"Plug 'SirVer/ultisnips' "Code snippets. Compare with cheat.sh-vim
 	"Plug 'junegunn/vim-easy-align' " Format hunks of code by row
 	"Plug 'sbdchd/neoformat' "Code formatting
 	"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} "Extended code highlighting
@@ -332,8 +350,10 @@ call plug#end()
 	" indent line/s
 	vnoremap > >gv
 	vnoremap < <gv
-	vnoremap <Tab> >
-	vnoremap <S-Tab> <
+  vnoremap <Tab> >gv
+	vnoremap <S-Tab> <gv
+  "Switch working directory to location of current file
+  nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
 	
 	" FUNCTIONS:
@@ -346,6 +366,15 @@ call plug#end()
 
 	" TODO: Write a function that creates a variable amount of new lines
 	
+" ---------------------------------------------------------------------------
+
+" ---------------------------------------------------------------------------
+" PLUGIN GIT GUTTER CONFIG:
+" ---------------------------------------------------------------------------
+  " Currently all ultisnips keybindings are disabled
+  let g:UltiSnipsExpandTrigger="§"
+  let g:UltiSnipsJumpForwardTrigger="§"
+  let g:UltiSnipsJumpBackwardTrigger="§"
 " ---------------------------------------------------------------------------
 
 
@@ -455,7 +484,7 @@ call plug#end()
 	command! -bang -nargs=* Rg
 		\ call fzf#vim#grep(
 		\   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-		\   fzf#vim#with_preview(), <bang>0)
+		\   fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 
 	" Project search with ripgrep
 	nnoremap <leader>s :Rg<CR>
@@ -489,6 +518,10 @@ call plug#end()
   tnoremap <A-]> <Esc>
   " Close floaterm with <esc> in normal mode 
   au! FileType floaterm nnoremap <buffer> <Esc> <C-\><C-n>:q<cr>
+  " Set floaterm window's background to transparent
+  hi Floaterm guibg=NONE
+  " Set floating window border line color and background to transparent
+  hi FloatermBorder guibg=NONE guifg=NONE
 " ---------------------------------------------------------------------------
 
 
@@ -509,6 +542,45 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
+  let g:coc_global_extensions = ['coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-lightbulb']
+
+  " COC SNIPPETS CONFIG:
+    " use <c-l> for trigger snippet expand.
+    imap <c-l> <plug>(coc-snippets-expand)
+
+    " use <c-j> for select text for visual placeholder of snippet.
+    vmap <c-j> <plug>(coc-snippets-select)
+
+    " use <c-j> for jump to next placeholder, it's default of coc.nvim
+    let g:coc_snippet_next = '<c-j>'
+
+    " use <c-k> for jump to previous placeholder, it's default of coc.nvim
+    let g:coc_snippet_prev = '<c-k>'
+
+    " use <c-j> for both expand and jump (make expand higher priority.)
+    imap <c-j> <plug>(coc-snippets-expand-jump)
+
+    " use <leader>x for convert visual selected code to snippet
+    xmap <leader>x  <plug>(coc-convert-snippet)
+
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? coc#_select_confirm() :
+          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+    let g:coc_snippet_next = '<tab>'
+    
+  " Use tab for trigger completion with characters ahead and navigate.
+  " Use command ':verbose imap <tab>' to make sure tab is not mapped by another plugin.
+	" inoremap <silent><expr> <TAB>
+	" 		 \ pumvisible() ? "\<C-n>" :
+	" 		 \ "\<TAB>"
+	" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
   nnoremap <leader>e <Cmd>CocCommand explorer<CR>
 	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
 		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
@@ -560,7 +632,7 @@ call plug#end()
 	endif
 	" Mappings for CoCList
 	" Show all diagnostics.
-	nnoremap <silent><nowait> <leader>cd  :<C-u>CocList diagnostics<cr>
+	nnoremap <silent><nowait> <leader>cdi  :<C-u>CocList diagnostics<cr>
 	" Manage extensions.
 	nnoremap <silent><nowait> <leader>ce  :<C-u>CocList extensions<cr>
 	" Show commands.
@@ -635,35 +707,6 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " CURRENTLY UNUSED CONFIG:
 " ---------------------------------------------------------------------------
-"
-"
-" ---------------------------------------------------------------------------
-" PLUGIN COC CONFIG:
-" ---------------------------------------------------------------------------
-"  Used in the tab autocompletion for coc
-"	 function! s:check_back_space() abort
-"		let col = col('.') - 1
-"		return !col || getline('.')[col - 1]  =~# '\s'
-"	 endfunction
-"	 Use tab for trigger completion with characters ahead and navigate.
-"	 Use command ':verbose imap <tab>' to make sure tab is not mapped by another plugin.
-"	 inoremap <silent><expr> <TAB>
-"				 \ pumvisible() ? "\<C-n>" :
-"				 \ <SID>check_back_space() ? "\<TAB>" :
-"				 \ coc#refresh()
-"	 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-"	 
-"	 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-"	 " position.
-"	 " Coc only does snippet and additional edit on confirm.
-"	 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-"	 
-"	 " Notify coc.nvim that <enter> has been pressed.
-"	 " Currently used for the formatOnType feature.
-"	 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-"				 \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-" ---------------------------------------------------------------------------
-"
 "
 " ---------------------------------------------------------------------------
 " PLUGIN YOUCOMPLETEME SETTINGS:
