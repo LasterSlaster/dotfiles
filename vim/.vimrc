@@ -25,6 +25,7 @@
 "  replace with coc-pylsp or coc-jedi?
 "  - Auto formatting and indentation? -> coc?
 "  - Install and use watchman for automating tasks on file changes?
+"  - Auto formatting and indentation?
 "  - Checkout vim build-in sessions :mksession
 "  - https://catswhocode.com/vim-commands/
 "
