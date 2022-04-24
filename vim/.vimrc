@@ -172,6 +172,8 @@ call plug#begin('~/.vim/plugged')
 	Plug 'matze/vim-move' "Move lines and blocks of code
   Plug 'airblade/vim-gitgutter' "Alternative to vim-signify. Show git signs in your code
   Plug 'ap/vim-css-color' "CSS color preview
+  Plug 'nvim-treesitter/nvim-treesitter'
+  Plug 'romgrk/nvim-treesitter-context'
 
   "Plug 'ryanoasis/vim-devicons' "Icons for explorer. Nerdfont. set encoding=utf-8
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
