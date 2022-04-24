@@ -18,6 +18,7 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - Look for a plugin to always show upper block like function, loop etc. so that I know where I am
 "  - Look for flutter/dart plugins
 "  - Coc configuration, coc-explorer, coc-movements? Coc plugin installtion
 "  script? let g:coc_global_extensions
