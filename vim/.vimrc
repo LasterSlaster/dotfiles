@@ -11,6 +11,8 @@
 "	- Install ag/rg/ripgrep
 "	- CoC Installation
 " - install ctags with: sudo apt install universal-ctags
+" - run :checkhealth
+" - Install languages for treesitter with :TSInstall [language]
 "
 " Initialize plugin system:
 "	 Reload .vimrc and :PlugInstall to install plugins. See https://github.com/junegunn/vim-plug
@@ -53,7 +55,7 @@
 " - :%s/old/new/gc	"Replace all occurences with confirmation
 " - :%s/onward/forward/gi	"Replace onward by forward, case unsensitive
 "   :g/string/d	"Delete all lines containing string
-" - :v/string/d	"Delete all lines containing which didn’t contain string
+" - :v/string/d	"Delvete all lines containing which didn’t contain string
 " - :s/Bill/Steve/	"Replace the first occurence of Bill by Steve in current line
 " - :s/Bill/Steve/g	"Replace Bill by Steve in current line
 " - :%s/Bill/Steve/g	"Replace Bill by Steve in all the file
@@ -172,9 +174,10 @@ call plug#begin('~/.vim/plugged')
 	Plug 'matze/vim-move' "Move lines and blocks of code
   Plug 'airblade/vim-gitgutter' "Alternative to vim-signify. Show git signs in your code
   Plug 'ap/vim-css-color' "CSS color preview
-  Plug 'nvim-treesitter/nvim-treesitter'
-  Plug 'romgrk/nvim-treesitter-context'
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'romgrk/nvim-treesitter-context' "Always show upper line of outer block context
 
+  "Plug 'wellle/context.vim' "An alternative to nvim-treesitter-context
   "Plug 'ryanoasis/vim-devicons' "Icons for explorer. Nerdfont. set encoding=utf-8
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
 	"Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'. Currently disabled because of incompatibility with coc plugin
@@ -256,7 +259,7 @@ call plug#end()
 	set confirm
   set list
   set listchars=tab:‣\ ,trail:· "Display trailing whitespaces and leading tabs
-  set clipboard=unnamedplus "Use system clipboard
+  set clipboard+=unnamedplus "Use system clipboard
 	
 	" CONFIGURATION FOR COC.NVIM
 	set nobackup " Some servers have issues with backup files
