@@ -19,7 +19,7 @@ mkcd ()
 # git commit
 gcom ()
 {
-	if [ "$#" -lt 2 ]; then
+	if [ "$#" -lt 1 ]; then
     echo "Illegal number of parameters"
   else
 		git commit -m "$*"
