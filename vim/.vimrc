@@ -28,6 +28,8 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - Add checks around each plugin installation and configuration to ensure
+"  functionaly in every environment
 "  - GUI or Plugin(keybindings) to easily split and move windows 
 "  - Autocomplete in vim command line / show options -> Look for a fzf list with all vim (:Commands)/ coc commands
 "  - Configure neovim for all my dev environments and process. GIt process
