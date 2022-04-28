@@ -1,0 +1,15 @@
+{
+	"metals.statusBarEnabled": true,
+	"metals.superMethodLensesEnabled": true,
+	"codeLens.enable": true,
+	"suggest.enablePreview": true,
+	"suggest.enablePreselect": false,
+	"suggest.noselect": true,
+  "explorer.file.showHiddenFiles": true,
+  "explorer.position": "left",
+  "texlab.build.onSave": true,
+  "texlab.build.forwardSearchAfter": true,
+  "texlab.build.args": [ "-pdf", "-interaction=nonstopmode", "-synctex=1", "-pv" ], 
+  "texlab.forwardSearch.executable": "zathura", 
+  "texlab.forwardSearch.args": ["--synctex-forward", "%l:1:%f", "%p"]
+}

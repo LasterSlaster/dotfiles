@@ -1,37 +1,57 @@
-" Reload vimrc commands: ":so $MYVIMRC" or ":source ~/.vimrc" or ":so %"
-"
 " ---------------------------------------------------------------------------
 " INSTALLATION:
 " ---------------------------------------------------------------------------
+" Follow these instructions to setup this vimrc configuration for a new
+" machine and make sure that all dependencies to system programms are
+" installed.
+"
+" - Install neovim nightly/unstable release(>v0.5)
+" - Install bat
 " - Install lazygit:
-"	-  If lazygit is integrated in floaterm plugin and active you have to install
-"	-  lazygit from https://github.com/jesseduffield/lazygit
+"	  - If lazygit is integrated in floaterm plugin and active you have to install
+"	  - lazygit from https://github.com/jesseduffield/lazygit
 "	- Install ag/rg/ripgrep
 "	- CoC Installation
 " - install ctags with: sudo apt install universal-ctags
+" - run :checkhealth
+" - Install languages for treesitter with :TSInstall [language]
+" - For latex install latexmk, lexlive + extensions{ texlive, texlive-fonts-extra, texlive-math-extra, texlive-lang-dutch (or texlive-lang-european), texlive-lang-english, texlive-latex-extra, texlive-xetex, biber, texlive-science, texlive-latex-extra, texlive-bibtex-extra, texlive-extra-utils} and a pdf preview
+"   supporting synctex like zathura
+" - install xclip on linux to share system clipboard with neovim
 "
 " Initialize plugin system:
 "	 Reload .vimrc and :PlugInstall to install plugins. See https://github.com/junegunn/vim-plug
 "	 To uninstall a plugin remove its line reload vim and run :PlugClean. To update a plugin
 "	 run : PlugUpdate. To upgrade plug itself run :PlugUpgrade
 "	 Specify directory for plugins
+"
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
-"  - Coc configuration
-"  - fzf configuration
-"  - Automatically change working dir to file location?
-"  - Consolidate all plugin commands and mappings
-"  - https://catswhocode.com/vim-commands/
-"  - Auto formatting and indentation?
+"  - GUI or Plugin(keybindings) to easily split and move windows 
+"  - Autocomplete in vim command line / show options -> Look for a fzf list with all vim (:Commands)/ coc commands
+"  - Configure neovim for all my dev environments and process. GIt process
+"  - Auto formatting and indentation? -> coc?
+"  - Coc configuration: Checkout coc-git, coc-python is not maintained anymore
+"  replace with coc-pylsp or coc-jedi?
+"  - Install and use watchman for automating tasks on file changes?
+"  - Improve Startify config
 "  - Checkout vim build-in sessions :mksession
+"  - https://catswhocode.com/vim-commands/
+"
 " ---------------------------------------------------------------------------
 " COMMANDS:
 " ---------------------------------------------------------------------------
+" - Relmad vimrc commands: ":so $MYVIMRC" or ":source ~/.vimrc" or ":so %"
+" - :CocCommand markdown-preview-enhanced.openPreview
+" - :CocCommand flutter.run
+" - :CocList FlutterDevices/-Emulators/-Devices
 " - :Plug...
-" - :Coc...
+" - :Coc...":CocConfig
 " - :S... like SLoad to load a Startify session
+" - :mksession "Save a vim session
 " - :nohlsearch
+" - :cd %:p:h "Change working directory to directory of current file
 " - :source ~/.vimrc / %
 " - :sav filename	"Saves file as filename
 " - :50 "Move to line number 50
@@ -46,13 +66,37 @@
 " - :%s/old/new/gc	"Replace all occurences with confirmation
 " - :%s/onward/forward/gi	"Replace onward by forward, case unsensitive
 "   :g/string/d	"Delete all lines containing string
-" - :v/string/d	"Delete all lines containing which didn’t contain string
+" - :v/string/d	"Delvete all lines containing which didn’t contain string
 " - :s/Bill/Steve/	"Replace the first occurence of Bill by Steve in current line
 " - :s/Bill/Steve/g	"Replace Bill by Steve in current line
 " - :%s/Bill/Steve/g	"Replace Bill by Steve in all the file
+" - :HowIn [language] "Cheat-vim: search for howto for current line
+" - :GV "Git commit browser
+" - :g/todo/ "Comment all lines with todo in it
+" - :Reloadvimrc "Trys to source vimrc from ~/.vimrc
+" - :Format "Format current buffer
+" - :Fold "Fold current buffer
+" - :OR "Organize imports
+" - :Colors "Fzf Command to display vim colorschemes
+" - :GFiles? "Fzf Command to display Git files (git status)
+" - :BLines [QUERY] 	"Fzf Command to search for text in Lines in the current buffer
+" - :Lines [QUERY] 	"Fzf Command to search for text in Lines 
+" - :History 	"Fzf command to display v:oldfiles and open buffers
+" - :History: 	"Fzf Command to display Command history
+" - :History/ 	"Fzf Command to display Search history
+" - :Snippets 	"Fzf Command to display Snippets (UltiSnips)
+" - :BCommits 	"Fzf Command to display Git commits for the current buffer; visual-select lines to track changes in the range
+" - :Commands 	"Fzf Command to display Vim Commands
+" - :Maps 	"Fzf Command to display Normal mode mappings
+" - :Helptags 	Help tags 1
+"
 " - set spell /nospell "Spell checking
+"
+" - § "Currently maped to all ultisnips keybindings to move it out of the way.
+"   Maybe think about a better solution to disable all ultisnips keybindungs
 " - 50% "type 50% to move to line at 50% of file
 " - %	"Move cursor to matching parenthesis
+" - ? "In coc-explorer view shows keybindings for file explorer actions
 " - [[	"Jump to function start
 " - [{	"Jump to block start
 " - * "Search for word under cursor
@@ -68,6 +112,41 @@
 " - gggUG	"Set all text to uppercase
 " - Ctrl+a	"Increment number under the cursor
 " - Ctrl+x	"Decrement number under cursor
+" - <esc><esc> "Cloase floaterm
+" - <A-]> "Send <esc> key to program in terminal
+" - <C-t> "Open new terminal session in floaterm
+" - <C-n> "Switch between floaterm tabs
+"   session. When open close window.
+" - ys[motion][character] "Surround a motion with a character
+" - cs[motion][character] "Replace a character around a motion
+"   ds[motion][character] "Deleta a character around a motion
+" - gc "In visual mode toggels commenting of highlighted region
+" - gcc "Toggle commenting a line
+" - gcap "Toggle commenting a paragraph
+" - gcgc "Uncomment block
+" - cx[motion] "Exchange two motions with each other. cxx to replace two lines
+" - <F3> "Toggle highlight search
+" - w!! "Sudo write
+" - jk "Remapping for <ESC>
+" - <C-p> "Search all project files
+" - <c-space> "Trigger auto-completion
+" - [g and ]g "Navigate diagnostics
+" - gd "<Plug>(coc-definition)
+" - gy "<Plug>(coc-type-definition)
+" - gi "<Plug>(coc-implementation)
+" - gr "<Plug>(coc-references)
+" - <C-f> "Scroll forward in coc window
+" - <C-b> "Scroll backwards in coc window
+" - K  "Show documentation
+" - <leader>KB or <leader>KE "Cheat-vim search for last error
+" - <leader>; "Toggle floaterm window. Open if existing otherwise create a new
+" - <leader>u "Open undotree
+" - <leader><tab> "Open Startify
+" - [c and]c "Git-Gutter: Jump between hunks. Preview, stage, undo <leader>ghp/ghs/ghu. :wincmd P jump to preview window
+" - zh "Only in coc-explorer. Shows hidden files
+" ????? inoremap <expr> <c-x><c-f> fzf#vim#complete#path( \ fzf#wrap({'dir': expand('%:p:h')}))
+" ---------------------------------------------------------------------------
+
 
 " install plugin manager vim-plug
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -88,15 +167,17 @@ call plug#begin('~/.vim/plugged')
 	Plug 'tpope/vim-surround' " quickly edit surroundings (brackets, html tags, etc) -> ys[motion][character] to surround a motion with a character or cs[motion][character] to replace them with another one and ds to delete surrounding characters 
 	Plug 'mbbill/undotree' "Shows a history of all changes in the file as a tree. Binds to <leader>u
 	Plug 'dbeniamine/cheat.sh-vim' "Browse code snippets etc. from cheat.sh website. Binding is <leader>KB or <leader>KE to search for last error. Also :HowIn javascrip will search for javascript version of current line
+  Plug 'SirVer/ultisnips' "Code snippets. Compare with cheat.sh-vim. Also used in fzf and coc
+  Plug 'honza/vim-snippets' "Provides snippets for ultisnips
 	if has('nvim')
 		Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
+    "For more coc extensions checkout https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions
+    " For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs, coc-explorer, coc-flutter, coc-rome(instead/addition to coc-tsserver?), coc-spell-checker, coc-json
 	endif
-	"more functionality. Also includes an explorer 'coc-explorer
-	" For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs
+  Plug 'dart-lang/dart-vim-plugin'
 	Plug 'junegunn/fzf', { 'do': { -> fzf#install() } } "An alternative to ctrlp fuzzy finder. Also install ag and ripgrep on your system
 	Plug 'junegunn/fzf.vim' " Wrappers and commands for fzf in vim
 	Plug 'stsewd/fzf-checkout.vim' " fzf for git branch management
-	" TODO: Check out fzf for movements (FzfLines)
 	Plug 'justinmk/vim-sneak' "Simple two character movements. Binds to s with first two letters of search
 	Plug 'vim-airline/vim-airline' "Bottom status bar
 	Plug 'mhinz/vim-startify' " Displays recent files on vim startup
@@ -104,32 +185,35 @@ call plug#begin('~/.vim/plugged')
 	Plug 'bkad/CamelCaseMotion'
 	Plug 'voldikss/vim-floaterm' "An alternative would be akinsho/toggleterm.nvim or kassio/neoterm
 	Plug 'matze/vim-move' "Move lines and blocks of code
-	if has('nvim') || has('patch-8.0.902')
-		Plug 'mhinz/vim-signify'
-	else
-		Plug 'mhinz/vim-signify', { 'branch': 'legacy' }
-	endif
+  Plug 'airblade/vim-gitgutter' "Alternative to vim-signify. Show git signs in your code
+  Plug 'ap/vim-css-color' "CSS color preview
+  Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+  Plug 'romgrk/nvim-treesitter-context' "Always show upper line of outer block context
 
-	"Plug 'metakirby5/codi.vim' a scratchpad for hackers. REPL
-	"Plug 'kassio/neoterm' "Terminal plugin. Integrate into to floaterm and use instead of default terminal?
+  "Plug 'wellle/context.vim' "An alternative to nvim-treesitter-context
+  "Plug 'ryanoasis/vim-devicons' "Icons for explorer. Nerdfont. set encoding=utf-8
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
 	"Plug 'Valloric/YouCompleteMe' " Also run './install.py --ts-completer --java-completer'. Currently disabled because of incompatibility with coc plugin
 	"Plug 'codota/tabnine-vim' " Code completion ai. Builds on top of YouCompleteMe plugin. Coc integration with coc-tabnine extenstion 
 	"Plug 'ctrlpvim/ctrlp.vim' " An alternative would be fzf
 	"Plug 'Raimondi/delimitMate' "Automatic closing of quotes etc. Currently disabled in favor of coc-pairs
+  "Plug 'lyuts/vim-rtags' "Probably I don't need this anymore
+	"Plug 'metakirby5/codi.vim' a scratchpad for hackers. REPL
+	"Plug 'kassio/neoterm' "Terminal plugin. Integrate into to floaterm and use instead of default terminal?
 	"Plug 'nvim-lua/plenary.nvim' "Required for telescope plugin
 	"Plug 'nvim-telescope/telescope.nvim' "A fuzzy finder. Alternative to fzf? Requires version 0.6 but I have 0.4...
-	"Plug 'airblade/vim-gitgutter' "Show git signs in your code
+  "if has('nvim') || has('patch-8.0.902') Plug 'mhinz/vim-signify' else Plug 'mhinz/vim-signify', { 'branch': 'legacy' } endif
 	"Plug 'iberianpig/tig-explorer.vim' "Git integration. Alternative to fugitive?
 	"Plug 'rbgrouleff/bclose.vim' "Required for tig-explorer in neovim
-	"Plug 'lyuts/vim-rtags' "Probably I don't need this anymore
 	"Plug 'jremmen/vim-ripgrep' "Also 'apt install ripgrep'?
 	"Plug 'mileszs/ack.vim' "A search tool. Could be used in addition with fd command
-  "Plug 'vifm/vifm.vim' "File explorer
+  "
+  "Plug 'mcchrish/nnn.vim' File explorer
+  "Plug 'vifm/vifm.vim' "File explorer. Or use floaterm wrapper
 	"Plug 'preservim/nerdtree' an alternative file explorer to the default netrw Or look for a better option. maybe one that integrates into floaterm!
 	"Plug 'justinmk/vim-dirvish' another file explorer but very lightweight
 	"Plug 'francoiscabrol/ranger.vim' "Plug 'rbgrouleff/bclose.vim' Required for ranger plugin in nvim! File Explorer. Or try floaterm integration
-	"Plug 'SirVer/ultisnips' "Code snippets
+  "
 	"Plug 'junegunn/vim-easy-align' " Format hunks of code by row
 	"Plug 'sbdchd/neoformat' "Code formatting
 	"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} "Extended code highlighting
@@ -143,6 +227,7 @@ call plug#end()
 " CUSTOM CONFIG:
 " ---------------------------------------------------------------------------
 	" Read file changes if open files have been changed by another program e.g. git pull
+  set encoding=UTF-8
 	set autoread
 	set autoindent
 	set splitbelow
@@ -187,7 +272,7 @@ call plug#end()
 	set confirm
   set list
   set listchars=tab:‣\ ,trail:· "Display trailing whitespaces and leading tabs
-  set clipboard=unnamedplus "Use system clipboard
+  set clipboard+=unnamedplus "Use system clipboard
 	
 	" CONFIGURATION FOR COC.NVIM
 	set nobackup " Some servers have issues with backup files
@@ -268,7 +353,7 @@ call plug#end()
   nnoremap <silent> <Leader>+ :vertical resize +5<CR>
 	nnoremap <silent> <Leader>- :vertical resize -5<CR>
 	" fast lex commandleader
-	nnoremap <leader>e :Lex<CR>
+	"nnoremap <leader>e :Lex<CR> Currently replaced by coc-explorer
   " Move between tabs
   nnoremap <leader>1 :tabnext 1<CR>
   nnoremap <leader>2 :tabnext 2<CR>
@@ -284,8 +369,10 @@ call plug#end()
 	" indent line/s
 	vnoremap > >gv
 	vnoremap < <gv
-	vnoremap <Tab> >
-	vnoremap <S-Tab> <
+  vnoremap <Tab> >gv
+	vnoremap <S-Tab> <gv
+  "Switch working directory to location of current file
+  nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
 	
 	" FUNCTIONS:
@@ -296,9 +383,46 @@ call plug#end()
 		endfunction
 		nnoremap <silent> <Leader>fiw :call FormatInnerWord()<CR>
 
+    " Use coc-explorer instead of netrw as default fileexplorer 
+    function! s:DisableFileExplorer()
+        au! FileExplorer
+    endfunction
+
+    function! s:OpenDirHere(dir)
+        if isdirectory(a:dir)
+          exec "silent CocCommand explorer " . a:dir
+        endif
+    endfunction
+
+    " Taken from vim-easytree plugin, and changed to use coc-explorer
+    augroup CocExplorerDefault
+        autocmd!
+        autocmd VimEnter * call <SID>DisableFileExplorer()
+        autocmd VimEnter * if &ft != "coc-list" | call <SID>OpenDirHere(expand('<amatch>'))
+        autocmd VimEnter * cd %:p:h 
+    augroup end
 	" TODO: Write a function that creates a variable amount of new lines
 	
 " ---------------------------------------------------------------------------
+
+" ---------------------------------------------------------------------------
+" PLUGIN GIT GUTTER CONFIG:
+" ---------------------------------------------------------------------------
+  " Currently all ultisnips keybindings are set to §
+  let g:UltiSnipsExpandTrigger="§"
+  let g:UltiSnipsJumpForwardTrigger="§"
+  let g:UltiSnipsJumpBackwardTrigger="§"
+" ---------------------------------------------------------------------------
+
+
+" ---------------------------------------------------------------------------
+" PLUGIN GIT GUTTER CONFIG:
+" ---------------------------------------------------------------------------
+  nmap <leader>ghs <Plug>(GitGutterStageHunk)
+  nmap <leader>ghu <Plug>(GitGutterUndoHunk)
+  nmap <leader>ghp <Plug>(GitGutterPreviewHunk)
+" ---------------------------------------------------------------------------
+
 
 " ---------------------------------------------------------------------------
 " PLUGIN STARTIFY CONFIG:
@@ -312,7 +436,8 @@ call plug#end()
 						\ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
 						\ { 'type': 'commands',  'header': ['   Commands']       },
 						\ ]
-	 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/.bashrc' ]
+
+	 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/config/nvim/coc-settings.json', '~/.bashrc' ]
 	 let g:startify_session_persistence = 1
 	 let g:startify_session_autoload = 1
    let g:startify_session_delete_buffers = 1
@@ -384,7 +509,9 @@ call plug#end()
 " ---------------------------------------------------------------------------
 	let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 	let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
-	let $FZF_DEFAULT_COMMAND='ag -g ""' 
+  " Default command is used on fzf Files command
+  " Include hidden files but exclude .git folder
+	let $FZF_DEFAULT_COMMAND='ag --hidden --ignore=.git --ignore=.idea -g  ""' 
 	" Or use ripgrep instead of ag for fzf fuzzy file search
 	"'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor}/*"'
 	command! -bang -nargs=? -complete=dir Files
@@ -396,14 +523,14 @@ call plug#end()
 	command! -bang -nargs=* Rg
 		\ call fzf#vim#grep(
 		\   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
-		\   fzf#vim#with_preview(), <bang>0)
+		\   fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 
 	" Project search with ripgrep
 	nnoremap <leader>s :Rg<CR>
 	"nnoremap <silent> <C-p> :call fzf#run(fzf#wrap({'source': 'ag -g ""'}))<CR>
-	nnoremap <silent> <C-p> :Files<CR>
+	nnoremap <silent> <C-p> <esc>:Files<CR>
 	"Mapping for fzf-checkout Plugin for git commits
-	nnoremap <Leader>gc :GCheckout<CR>
+	nnoremap <leader>gc :GCheckout<CR>
 	nnoremap <leader>gs :G<CR>
 	nnoremap <leader>B :Buffer<CR>
 	nnoremap <leader>H :History<CR>
@@ -424,8 +551,16 @@ call plug#end()
 	let g:floaterm_keymap_new = '<c-t>'
 	let g:floaterm_keymap_next = '<c-n>'
 " TODO: Also checkout LazyDocker
+  " Use key mapping <A-]> to send the <esc> key to the terminal
 	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
-  autocmd FileType floaterm tnoremap <buffer> <Esc> :q<cr>
+  " This way Esc key can be send to underlying program in termeinal
+  tnoremap <A-]> <Esc>
+  " Close floaterm with <esc> in normal mode 
+  au! FileType floaterm nnoremap <buffer> <Esc> <C-\><C-n>:q<cr>
+  " Set floaterm window's background to transparent
+  hi Floaterm guibg=NONE
+  " Set floating window border line color and background to transparent
+  hi FloatermBorder guibg=NONE guifg=NONE
 " ---------------------------------------------------------------------------
 
 
@@ -446,6 +581,46 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
+  let g:coc_global_extensions = ['coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-lightbulb']
+
+  " COC SNIPPETS CONFIG:
+    " use <c-l> for trigger snippet expand.
+    imap <c-l> <plug>(coc-snippets-expand)
+
+    " use <c-j> for select text for visual placeholder of snippet.
+    vmap <c-j> <plug>(coc-snippets-select)
+
+    " use <c-j> for jump to next placeholder, it's default of coc.nvim
+    let g:coc_snippet_next = '<c-j>'
+
+    " use <c-k> for jump to previous placeholder, it's default of coc.nvim
+    let g:coc_snippet_prev = '<c-k>'
+
+    " use <c-j> for both expand and jump (make expand higher priority.)
+    imap <c-j> <plug>(coc-snippets-expand-jump)
+
+    " use <leader>x for convert visual selected code to snippet
+    xmap <leader>x  <plug>(coc-convert-snippet)
+
+    inoremap <silent><expr> <TAB>
+          \ pumvisible() ? coc#_select_confirm() :
+          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+    function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+    endfunction
+    let g:coc_snippet_next = '<tab>'
+    
+  " Use tab for trigger completion with characters ahead and navigate.
+  " Use command ':verbose imap <tab>' to make sure tab is not mapped by another plugin.
+	" inoremap <silent><expr> <TAB>
+	" 		 \ pumvisible() ? "\<C-n>" :
+	" 		 \ "\<TAB>"
+	" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+  nnoremap <leader>e <Cmd>CocCommand explorer<CR>
 	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
 		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
 	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
@@ -496,7 +671,7 @@ call plug#end()
 	endif
 	" Mappings for CoCList
 	" Show all diagnostics.
-	nnoremap <silent><nowait> <leader>cd  :<C-u>CocList diagnostics<cr>
+	nnoremap <silent><nowait> <leader>cdi  :<C-u>CocList diagnostics<cr>
 	" Manage extensions.
 	nnoremap <silent><nowait> <leader>ce  :<C-u>CocList extensions<cr>
 	" Show commands.
@@ -571,35 +746,6 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " CURRENTLY UNUSED CONFIG:
 " ---------------------------------------------------------------------------
-"
-"
-" ---------------------------------------------------------------------------
-" PLUGIN COC CONFIG:
-" ---------------------------------------------------------------------------
-"  Used in the tab autocompletion for coc
-"	 function! s:check_back_space() abort
-"		let col = col('.') - 1
-"		return !col || getline('.')[col - 1]  =~# '\s'
-"	 endfunction
-"	 Use tab for trigger completion with characters ahead and navigate.
-"	 Use command ':verbose imap <tab>' to make sure tab is not mapped by another plugin.
-"	 inoremap <silent><expr> <TAB>
-"				 \ pumvisible() ? "\<C-n>" :
-"				 \ <SID>check_back_space() ? "\<TAB>" :
-"				 \ coc#refresh()
-"	 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-"	 
-"	 " Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-"	 " position.
-"	 " Coc only does snippet and additional edit on confirm.
-"	 inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-"	 
-"	 " Notify coc.nvim that <enter> has been pressed.
-"	 " Currently used for the formatOnType feature.
-"	 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-"				 \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-" ---------------------------------------------------------------------------
-"
 "
 " ---------------------------------------------------------------------------
 " PLUGIN YOUCOMPLETEME SETTINGS:

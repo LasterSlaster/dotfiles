@@ -1,0 +1,1 @@
+/home/laster/dotfiles/vim/init.vim
