@@ -1,18 +1,21 @@
 " ---------------------------------------------------------------------------
 " INSTALLATION:
 " ---------------------------------------------------------------------------
-"   Follow these instructions to setup this vimrc configuration for a new
-"   machine and make sure that all dependencies to system programms are
-"   installed
+" Follow these instructions to setup this vimrc configuration for a new
+" machine and make sure that all dependencies to system programms are
+" installed.
+"
 " - Install bat
 " - Install lazygit:
-"	-  If lazygit is integrated in floaterm plugin and active you have to install
-"	-  lazygit from https://github.com/jesseduffield/lazygit
+"	  - If lazygit is integrated in floaterm plugin and active you have to install
+"	  - lazygit from https://github.com/jesseduffield/lazygit
 "	- Install ag/rg/ripgrep
 "	- CoC Installation
 " - install ctags with: sudo apt install universal-ctags
 " - run :checkhealth
 " - Install languages for treesitter with :TSInstall [language]
+" - For latex install latexmk, lexlive + extensions{ texlive, texlive-fonts-extra, texlive-math-extra, texlive-lang-dutch (or texlive-lang-european), texlive-lang-english, texlive-latex-extra, texlive-xetex, biber, texlive-science, texlive-latex-extra, texlive-bibtex-extra, texlive-extra-utils} and a pdf preview
+"   supporting synctex like zathura
 "
 " Initialize plugin system:
 "	 Reload .vimrc and :PlugInstall to install plugins. See https://github.com/junegunn/vim-plug
@@ -23,11 +26,13 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - Autocomplete in vim command line / show options -> Look for a fzf list with all vim (:Commands)/ coc commands
+"  - Configure neovim for all my dev environments and process. GIt process
+"  - Auto formatting and indentation? -> coc?
 "  - Coc configuration: Checkout coc-git, coc-python is not maintained anymore
 "  replace with coc-pylsp or coc-jedi?
-"  - Auto formatting and indentation? -> coc?
 "  - Install and use watchman for automating tasks on file changes?
-"  - Auto formatting and indentation?
+"  - Improve Startify config
 "  - Checkout vim build-in sessions :mksession
 "  - https://catswhocode.com/vim-commands/
 "
@@ -35,6 +40,9 @@
 " COMMANDS:
 " ---------------------------------------------------------------------------
 " - Relmad vimrc commands: ":so $MYVIMRC" or ":source ~/.vimrc" or ":so %"
+" - :CocCommand markdown-preview-enhanced.openPreview
+" - :CocCommand flutter.run
+" - :CocList FlutterDevices/-Emulators/-Devices
 " - :Plug...
 " - :Coc...":CocConfig
 " - :S... like SLoad to load a Startify session
@@ -81,6 +89,8 @@
 "
 " - set spell /nospell "Spell checking
 "
+" - § "Currently maped to all ultisnips keybindings to move it out of the way.
+"   Maybe think about a better solution to disable all ultisnips keybindungs
 " - 50% "type 50% to move to line at 50% of file
 " - %	"Move cursor to matching parenthesis
 " - ? "In coc-explorer view shows keybindings for file explorer actions
@@ -370,6 +380,24 @@ call plug#end()
 		endfunction
 		nnoremap <silent> <Leader>fiw :call FormatInnerWord()<CR>
 
+    " Use coc-explorer instead of netrw as default fileexplorer 
+    function! s:DisableFileExplorer()
+        au! FileExplorer
+    endfunction
+
+    function! s:OpenDirHere(dir)
+        if isdirectory(a:dir)
+          exec "silent CocCommand explorer " . a:dir
+        endif
+    endfunction
+
+    " Taken from vim-easytree plugin, and changed to use coc-explorer
+    augroup CocExplorerDefault
+        autocmd!
+        autocmd VimEnter * call <SID>DisableFileExplorer()
+        autocmd VimEnter * if &ft != "coc-list" | call <SID>OpenDirHere(expand('<amatch>'))
+        autocmd VimEnter * cd %:p:h 
+    augroup end
 	" TODO: Write a function that creates a variable amount of new lines
 	
 " ---------------------------------------------------------------------------
@@ -377,7 +405,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN GIT GUTTER CONFIG:
 " ---------------------------------------------------------------------------
-  " Currently all ultisnips keybindings are disabled
+  " Currently all ultisnips keybindings are set to §
   let g:UltiSnipsExpandTrigger="§"
   let g:UltiSnipsJumpForwardTrigger="§"
   let g:UltiSnipsJumpBackwardTrigger="§"
@@ -478,7 +506,9 @@ call plug#end()
 " ---------------------------------------------------------------------------
 	let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
 	let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4 --preview 'bat --color=always --style=header,grid --line-range :300 {}'"
-	let $FZF_DEFAULT_COMMAND='ag -g ""' 
+  " Default command is used on fzf Files command
+  " Include hidden files but exclude .git folder
+	let $FZF_DEFAULT_COMMAND='ag --hidden --ignore=.git --ignore=.idea -g  ""' 
 	" Or use ripgrep instead of ag for fzf fuzzy file search
 	"'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor}/*"'
 	command! -bang -nargs=? -complete=dir Files
@@ -495,7 +525,7 @@ call plug#end()
 	" Project search with ripgrep
 	nnoremap <leader>s :Rg<CR>
 	"nnoremap <silent> <C-p> :call fzf#run(fzf#wrap({'source': 'ag -g ""'}))<CR>
-	nnoremap <silent> <C-p> :Files<CR>
+	nnoremap <silent> <C-p> <esc>:Files<CR>
 	"Mapping for fzf-checkout Plugin for git commits
 	nnoremap <leader>gc :GCheckout<CR>
 	nnoremap <leader>gs :G<CR>
@@ -548,7 +578,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
-  let g:coc_global_extensions = ['coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-lightbulb']
+  let g:coc_global_extensions = ['coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-lightbulb']
 
   " COC SNIPPETS CONFIG:
     " use <c-l> for trigger snippet expand.
