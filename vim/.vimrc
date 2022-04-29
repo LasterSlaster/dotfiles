@@ -10,7 +10,7 @@
 " - Install lazygit:
 "	  - If lazygit is integrated in floaterm plugin and active you have to install
 "	  - lazygit from https://github.com/jesseduffield/lazygit
-"	- Install ag/rg/ripgrep
+"	- Install ag/rg/ripgrep/fd
 "	- CoC Installation
 " - install ctags with: sudo apt install universal-ctags
 " - run :checkhealth
@@ -91,6 +91,8 @@
 " - :Commands 	"Fzf Command to display Vim Commands
 " - :Maps 	"Fzf Command to display Normal mode mappings
 " - :Helptags 	Help tags 1
+" - :map / :map!  "Display a list of all key mappings/bindings. ! displays
+"   mappings for insert and command mode
 "
 " - set spell /nospell "Spell checking
 "
