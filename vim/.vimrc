@@ -670,8 +670,8 @@ call plug#end()
 	let g:gruvbox_guisp_fallback = "bg"
 	colorscheme gruvbox
 	" Make backgound transparent
-	autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
-	set background=dark
+  set background=dark
+	hi Normal guibg=NONE ctermbg=NONE
 " ---------------------------------------------------------------------------
 
 
