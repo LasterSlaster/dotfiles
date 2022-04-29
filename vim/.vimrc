@@ -402,7 +402,7 @@ call plug#end()
     augroup CocExplorerDefault
         autocmd!
         autocmd VimEnter * call <SID>DisableFileExplorer()
-        autocmd VimEnter * if &ft != "coc-list" | call <SID>OpenDirHere(expand('<amatch>'))
+        autocmd VimEnter * if &ft != "coc-list" && &ft != "coc-explorer" | call <SID>OpenDirHere(expand('<amatch>'))
         autocmd VimEnter * cd %:p:h 
     augroup end
 	" TODO: Write a function that creates a variable amount of new lines
@@ -625,6 +625,19 @@ call plug#end()
 	" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
   nnoremap <leader>e <Cmd>CocCommand explorer<CR>
+
+  function! s:ChangeDir()
+    silent call CocAction('runCommand', 'explorer.doAction', 0, ['copyFilepath']) 
+    if isdirectory(getreg('+'))
+      execute 'cd '.getreg('+')
+      echo 'change working directory to: '.getreg('+')
+    endif
+  endfunction
+
+	augroup cocexplorer
+    autocmd FileType coc-explorer map <silent><buffer> cd :call <SID>ChangeDir()<cr>
+  augroup end
+
 	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
 		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
 	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
