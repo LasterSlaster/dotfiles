@@ -907,12 +907,12 @@ call plug#end()
 		autocmd FileType scala setl formatexpr=CocAction('formatSelected')
 		" Update signature help on jump placeholder
 		autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    " Highlight symbol under cursor on CursorHold
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+    " In order to get comment highlighting in json
+    autocmd FileType json syntax match Comment +\/\/.\+$+
 	augroup end
 
-	" Highlight symbol under cursor on CursorHold
-	autocmd CursorHold * silent call CocActionAsync('highlight')
-	" In order to get comment highlighting in json
-	autocmd FileType json syntax match Comment +\/\/.\+$+
 
 	" Use `:Format` to format current buffer
 	command! -nargs=0 Format :call CocAction('format')
