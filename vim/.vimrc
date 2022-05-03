@@ -28,6 +28,8 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - Automatic project creation
+"  - Templates(file creation) for e.g. notes(see obsidian), classes etc.
 "  - GUI or Plugin(keybindings) to easily split and move windows 
 "  - Autocomplete in vim command line / show options -> Look for a fzf list with all vim (:Commands)/ coc commands
 "  - Configure neovim for all my dev environments and process. GIt process
@@ -418,9 +420,9 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN GIT GUTTER CONFIG:
 " ---------------------------------------------------------------------------
-  nmap <leader>ghs <Plug>(GitGutterStageHunk)
-  nmap <leader>ghu <Plug>(GitGutterUndoHunk)
-  nmap <leader>ghp <Plug>(GitGutterPreviewHunk)
+  nnoremap <leader>ghs <Plug>(GitGutterStageHunk)
+  nnoremap <leader>ghu <Plug>(GitGutterUndoHunk)
+  nnoremap <leader>ghp <Plug>(GitGutterPreviewHunk)
 " ---------------------------------------------------------------------------
 
 
@@ -547,6 +549,8 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN FLOATERM CONFIG:
 " ---------------------------------------------------------------------------
+  "TODO: This causes floaterm to "pause" every time I type <space> in the
+  "terminal
 	let g:floaterm_keymap_toggle = '<leader>;'
 	let g:floaterm_keymap_new = '<c-t>'
 	let g:floaterm_keymap_next = '<c-n>'
