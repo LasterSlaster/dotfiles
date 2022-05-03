@@ -7,6 +7,7 @@
 	"suggest.noselect": true,
   "explorer.file.showHiddenFiles": true,
   "explorer.position": "left",
+  "ltex.language": "de-DE",
   "texlab.build.onSave": true,
   "texlab.build.forwardSearchAfter": true,
   "texlab.build.args": [ "-pdf", "-interaction=nonstopmode", "-synctex=1", "-pv" ], 
