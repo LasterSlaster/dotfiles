@@ -10,12 +10,12 @@
 " - Install lazygit:
 "	  - If lazygit is integrated in floaterm plugin and active you have to install
 "	  - lazygit from https://github.com/jesseduffield/lazygit
-"	- Install ag/rg/ripgrep
+"	- Install ag/rg/ripgrep/fd
 "	- CoC Installation
 " - install ctags with: sudo apt install universal-ctags
 " - run :checkhealth
 " - Install languages for treesitter with :TSInstall [language]
-" - For latex install latexmk, lexlive + extensions{ texlive, texlive-fonts-extra, texlive-math-extra, texlive-lang-dutch (or texlive-lang-european), texlive-lang-english, texlive-latex-extra, texlive-xetex, biber, texlive-science, texlive-latex-extra, texlive-bibtex-extra, texlive-extra-utils} and a pdf preview
+" - For latex install latexmk, texlive + extensions{ texlive, texlive-fonts-extra, texlive-math-extra, texlive-lang-dutch (or texlive-lang-european), texlive-lang-english, texlive-latex-extra, texlive-xetex, biber, texlive-science, texlive-latex-extra, texlive-bibtex-extra, texlive-extra-utils} and a pdf preview
 "   supporting synctex like zathura
 " - install xclip on linux to share system clipboard with neovim
 "
@@ -30,6 +30,16 @@
 " ---------------------------------------------------------------------------
 "  - Automatic project creation
 "  - Templates(file creation) for e.g. notes(see obsidian), classes etc.
+"  - Replace search tool for / and ? to make it work with fuzzy search
+"  - Improve setup to emulate important obsidian features, find tags and
+"  navigate links
+"  - Fix latex setup and checkout coc-vimtex as an alternative
+"  - Checkout LunarVim, AstroVim
+"  - Checkout modern terminal emulators like Kitty, Alacritty, Fish, WezTerm,
+"  iTerm
+"  - Setup vimrc also for root user
+"  - Add checks around each plugin installation and configuration to ensure
+"  functionaly in every environment
 "  - GUI or Plugin(keybindings) to easily split and move windows 
 "  - Autocomplete in vim command line / show options -> Look for a fzf list with all vim (:Commands)/ coc commands
 "  - Configure neovim for all my dev environments and process. GIt process
@@ -91,11 +101,14 @@
 " - :Commands 	"Fzf Command to display Vim Commands
 " - :Maps 	"Fzf Command to display Normal mode mappings
 " - :Helptags 	Help tags 1
+" - :map / :map!  "Display a list of all key mappings/bindings. ! displays
+"   mappings for insert and command mode
 "
 " - set spell /nospell "Spell checking
 "
 " - § "Currently maped to all ultisnips keybindings to move it out of the way.
 "   Maybe think about a better solution to disable all ultisnips keybindungs
+" - * # "Search for word under cursor
 " - 50% "type 50% to move to line at 50% of file
 " - %	"Move cursor to matching parenthesis
 " - ? "In coc-explorer view shows keybindings for file explorer actions
@@ -146,6 +159,7 @@
 " - <leader><tab> "Open Startify
 " - [c and]c "Git-Gutter: Jump between hunks. Preview, stage, undo <leader>ghp/ghs/ghu. :wincmd P jump to preview window
 " - zh "Only in coc-explorer. Shows hidden files
+" - Il / Ic "Coc-explorer: Toggle display of file information and content
 " ????? inoremap <expr> <c-x><c-f> fzf#vim#complete#path( \ fzf#wrap({'dir': expand('%:p:h')}))
 " ---------------------------------------------------------------------------
 
@@ -157,12 +171,14 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+
 call plug#begin('~/.vim/plugged')
 	" Section of plugins to install 
 	Plug 'machakann/vim-highlightedyank' "highlights the yanked section for a second
 	Plug 'tommcdo/vim-exchange' "Exchange/replace two regions of text with each other. Binding is cx plus movement(cxx=line)
 	Plug 'tpope/vim-commentary' "Comment multiple lines. Binding is gc (gcc=line, gcap=paragraph,:g/todo/Commentary=all lines with todo in it,gcgc=uncomment)
 	Plug 'morhetz/gruvbox' "Color scheme
+  Plug 'folke/tokyonight.nvim', { 'branch': 'main' } "Color scheme
 	Plug 'joshdick/onedark.vim' "Color scheme
 	Plug 'tpope/vim-fugitive' "Git plugin
 	Plug 'junegunn/gv.vim' "Git commit browser. Command is :GV !/? or show changes of selected lines
@@ -191,7 +207,12 @@ call plug#begin('~/.vim/plugged')
   Plug 'ap/vim-css-color' "CSS color preview
   Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
   Plug 'romgrk/nvim-treesitter-context' "Always show upper line of outer block context
+  Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
+  Plug 'sindrets/winshift.nvim'
 
+  " Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
+  " " Plug 'ryanoasis/vim-devicons' Icons without colours
+  " Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
   "Plug 'wellle/context.vim' "An alternative to nvim-treesitter-context
   "Plug 'ryanoasis/vim-devicons' "Icons for explorer. Nerdfont. set encoding=utf-8
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
@@ -297,7 +318,7 @@ call plug#end()
 	" Tweaks for file browsing
 	" enable syntax highlighting and plugins (for netrw)
 	syntax enable
-	filetype plugin on
+	filetype plugin indent on
 	let g:netrw_winsize=25
 	let g:netrw_banner=1        " disable annoying banner
 	let g:netrw_browse_split=2  " open file to the right of explorer
@@ -343,69 +364,92 @@ call plug#end()
 	nnoremap <leader>h :wincmd h<CR>
 	nnoremap <leader>j :wincmd j<CR>
 	nnoremap <leader>k :wincmd k<CR>
-	nnoremap <leader>l :wincmd l<CR>
-	" Open a new buffer with vertical split
-	nnoremap <leader>n :vnew<CR>
-	" fast quit
-	nnoremap <leader>q :q<CR>
-	" fast write
-	nnoremap <leader>w :w<CR>
-	" paste yanked word
-	nnoremap <leader>p "0p
-  nnoremap <silent> <Leader>+ :vertical resize +5<CR>
-	nnoremap <silent> <Leader>- :vertical resize -5<CR>
-	" fast lex commandleader
-	"nnoremap <leader>e :Lex<CR> Currently replaced by coc-explorer
-  " Move between tabs
-  nnoremap <leader>1 :tabnext 1<CR>
-  nnoremap <leader>2 :tabnext 2<CR>
-  nnoremap <leader>3 :tabnext 3<CR>
-  nnoremap <leader>4 :tabnext e<CR>
-  nnoremap <leader>5 :tabnext 5<CR>
-  nnoremap <leader>6 :tabnext 6<CR>
-  nnoremap <leader>7 :tabnext 7<CR>
-  nnoremap <leader>8 :tabnext 8<CR>
-  nnoremap <leader>9 :tabnext 9<CR>
-	" toggle search highlights 
-	nnoremap <F3> :set hlsearch!<CR>
-	" indent line/s
-	vnoremap > >gv
-	vnoremap < <gv
-  vnoremap <Tab> >gv
-	vnoremap <S-Tab> <gv
-  "Switch working directory to location of current file
-  nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
+    nnoremap <leader>l :wincmd l<CR>
+    " Open a new buffer with vertical split
+    nnoremap <leader>n :vnew<CR>
+    " fast quit
+    nnoremap <leader>q :q<CR>
+    " fast write
+    nnoremap <leader>w :w<CR>
+    " paste yanked word
+    nnoremap <leader>p "0p
+    nnoremap <silent> <Leader>+ :vertical resize +5<CR>
+    nnoremap <silent> <Leader>- :vertical resize -5<CR>
+    " fast lex commandleader
+    "nnoremap <leader>e :Lex<CR> Currently replaced by coc-explorer
+    " Move between tabs
+    nnoremap <leader>1 :tabnext 1<CR>
+    nnoremap <leader>2 :tabnext 2<CR>
+    nnoremap <leader>3 :tabnext 3<CR>
+    nnoremap <leader>4 :tabnext e<CR>
+    nnoremap <leader>5 :tabnext 5<CR>
+    nnoremap <leader>6 :tabnext 6<CR>
+    nnoremap <leader>7 :tabnext 7<CR>
+    nnoremap <leader>8 :tabnext 8<CR>
+    nnoremap <leader>9 :tabnext 9<CR>
+    " toggle search highlights 
+    nnoremap <F3> :set hlsearch!<CR>
+    " indent line/s
+    vnoremap > >gv
+    vnoremap < <gv
+    vnoremap <Tab> >gv
+    vnoremap <S-Tab> <gv
+    "Switch working directory to location of current file
+    nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
-	
-	" FUNCTIONS:
-	" Format innerword at current cursor location to first letter uppercase and
-	" all following lower case e.g. 'Test'
-		function! FormatInnerWord()
-			normal guiw~e
-		endfunction
-		nnoremap <silent> <Leader>fiw :call FormatInnerWord()<CR>
+    
+    " FUNCTIONS:
+    " Format innerword at current cursor location to first letter uppercase and
+    " all following lower case e.g. 'Test'
+      function! FormatInnerWord()
+        normal guiw~e
+      endfunction
+      nnoremap <silent> <Leader>fiw :call FormatInnerWord()<CR>
 
-    " Use coc-explorer instead of netrw as default fileexplorer 
-    function! s:DisableFileExplorer()
-        au! FileExplorer
-    endfunction
+    " TODO: Write a function that creates a variable amount of new lines
+    
+  " ---------------------------------------------------------------------------
 
-    function! s:OpenDirHere(dir)
-        if isdirectory(a:dir)
-          exec "silent CocCommand explorer " . a:dir
-        endif
-    endfunction
+  " ---------------------------------------------------------------------------
+  " PLUGIN WINSHIFT CONFIG:
+  " ---------------------------------------------------------------------------
+    " let g:vimtex_view_method = 'zathura'
 
-    " Taken from vim-easytree plugin, and changed to use coc-explorer
-    augroup CocExplorerDefault
-        autocmd!
-        autocmd VimEnter * call <SID>DisableFileExplorer()
-        autocmd VimEnter * if &ft != "coc-list" | call <SID>OpenDirHere(expand('<amatch>'))
-        autocmd VimEnter * cd %:p:h 
-    augroup end
-	" TODO: Write a function that creates a variable amount of new lines
-	
+    " Or with a generic interface:
+    let g:vimtex_view_general_viewer = 'okular'
+    let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
+
+    " Most VimTeX mappings rely on localleader and this can be changed with the
+    " following line. The default is usually fine and is the symbol "\".
+    let maplocalleader = ","
+  " ---------------------------------------------------------------------------
+
+
+  " ---------------------------------------------------------------------------
+  " PLUGIN WINSHIFT CONFIG:
+  " ---------------------------------------------------------------------------
+    " Start Win-Move mode:
+    nnoremap <C-W><C-M> <Cmd>WinShift<CR>
+    nnoremap <C-W>m <Cmd>WinShift<CR>
+
+    " Swap two windows:
+    nnoremap <C-W>x <Cmd>WinShift swap<CR>
+
+  " If you don't want to use Win-Move mode you can create mappings for calling the
+  " move commands directly:
+  nnoremap <C-M-H> <Cmd>WinShift left<CR>
+  nnoremap <C-M-J> <Cmd>WinShift down<CR>
+  nnoremap <C-M-K> <Cmd>WinShift up<CR>
+  nnoremap <C-M-L> <Cmd>WinShift right<CR>
 " ---------------------------------------------------------------------------
+
+
+" ---------------------------------------------------------------------------
+" PLUGIN NVIM WINDOW CONFIG:
+" ---------------------------------------------------------------------------
+  map <silent> <leader><leader> :lua require('nvim-window').pick()<CR>
+" ---------------------------------------------------------------------------
+
 
 " ---------------------------------------------------------------------------
 " PLUGIN GIT GUTTER CONFIG:
@@ -423,31 +467,6 @@ call plug#end()
   nnoremap <leader>ghs <Plug>(GitGutterStageHunk)
   nnoremap <leader>ghu <Plug>(GitGutterUndoHunk)
   nnoremap <leader>ghp <Plug>(GitGutterPreviewHunk)
-" ---------------------------------------------------------------------------
-
-
-" ---------------------------------------------------------------------------
-" PLUGIN STARTIFY CONFIG:
-" ---------------------------------------------------------------------------
-" USAGE: Commands start with :S like :SSave to save a session. To start
-" Startify use :Startify
-	let g:startify_lists = [
-						\ { 'type': 'files',     'header': ['   Files']            },
-						\ { 'type': 'dir',       'header': ['   Current Dir '. getcwd()] },
-						\ { 'type': 'sessions',  'header': ['   Sessions']       },
-						\ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
-						\ { 'type': 'commands',  'header': ['   Commands']       },
-						\ ]
-
-	 let g:startify_bookmarks = [ {'c': '~/.vimrc'}, '~/config/nvim/coc-settings.json', '~/.bashrc' ]
-	 let g:startify_session_persistence = 1
-	 let g:startify_session_autoload = 1
-   let g:startify_session_delete_buffers = 1
-   let g:startify_change_to_vcs_root = 1
-   let g:startify_fortune_use_unicode = 1
-   let g:startify_enable_special = 0
-	 let g:startify_session_dir = '~/.config/nvim/session'
-   nnoremap <leader><tab> :Startify<cr>
 " ---------------------------------------------------------------------------
 
 
@@ -498,11 +517,13 @@ call plug#end()
 " PLUGIN GRUVBOX CONFIG:
 " ---------------------------------------------------------------------------
 	" If gruvbox plugin is install, sets gruvbox theme
-	let g:gruvbox_guisp_fallback = "bg"
-	colorscheme gruvbox
+	" let g:gruvbox_guisp_fallback = "bg"
+	" colorscheme gruvbox
+  set background=dark
+  let g:tokyonight_style = "storm"
+  colorscheme tokyonight
 	" Make backgound transparent
-	autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
-	set background=dark
+  " hi Normal guibg=NONE ctermbg=NONE
 " ---------------------------------------------------------------------------
 
 
@@ -515,16 +536,16 @@ call plug#end()
   " Include hidden files but exclude .git folder
 	let $FZF_DEFAULT_COMMAND='ag --hidden --ignore=.git --ignore=.idea -g  ""' 
 	" Or use ripgrep instead of ag for fzf fuzzy file search
-	"'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor}/*"'
 	command! -bang -nargs=? -complete=dir Files
 			\ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
 	command! -bang -nargs=* GGrep
+  "'rg --files --ignore-case --hidden -g "!{.git,node_modules,vendor}/*"'
 		\ call fzf#vim#grep(
 		\   'git grep --line-number -- '.shellescape(<q-args>), 0,
 		\   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
 	command! -bang -nargs=* Rg
 		\ call fzf#vim#grep(
-		\   'rg --column --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
+		\   'rg --column --hidden --line-number --no-heading --color=always --smart-case -- '.shellescape(<q-args>), 1,
 		\   fzf#vim#with_preview({'options': '--delimiter : --nth 4..'}), <bang>0)
 
 	" Project search with ripgrep
@@ -534,9 +555,12 @@ call plug#end()
 	"Mapping for fzf-checkout Plugin for git commits
 	nnoremap <leader>gc :GCheckout<CR>
 	nnoremap <leader>gs :G<CR>
+  nnoremap <leader>gb :GBranches<CR>
+  nnoremap <leader>/ :BTags<cr>
 	nnoremap <leader>B :Buffer<CR>
 	nnoremap <leader>H :History<CR>
-	nnoremap <leader>gb :GBranches<CR>
+	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
+		\ fzf#wrap({'dir': expand('%:p:h')}))
 
 	if has('nvim')
 		"Exit fzf floating window and terminal with Esc
@@ -549,11 +573,19 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN FLOATERM CONFIG:
 " ---------------------------------------------------------------------------
-  "TODO: This causes floaterm to "pause" every time I type <space> in the
-  "terminal
-	let g:floaterm_keymap_toggle = '<leader>;'
-	let g:floaterm_keymap_new = '<c-t>'
-	let g:floaterm_keymap_next = '<c-n>'
+  function! s:currentFloatermName()
+    let bufNr = floaterm#buflist#curr()
+    let currentFloatermName = floaterm#terminal#get_bufname(bufnr)
+  endfunction
+  let g:floaterm_keymap_toggle = '<leader>;'
+  let g:floaterm_keymap_new = ';t'
+  let g:floaterm_opener = 'edit'
+  tnoremap ;x <cmd>FloatermKill(s:currentFloatermName())<cr><cmd>FloatermShow()<cr>
+  tnoremap ;n <cmd>FloatermNext<cr>
+  tnoremap ;p <cmd>FloatermPrev<cr>
+  tnoremap ;q <cmd>FloatermHide<cr>
+  tnoremap ;<space> <cmd>FloatermToggle<cr>
+  nnoremap <leader>; <cmd>FloatermToggle<cr>
 " TODO: Also checkout LazyDocker
   " Use key mapping <A-]> to send the <esc> key to the terminal
 	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
@@ -585,7 +617,8 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
-  let g:coc_global_extensions = ['coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-lightbulb']
+  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-lightbulb']
+
 
   " COC SNIPPETS CONFIG:
     " use <c-l> for trigger snippet expand.
@@ -606,36 +639,76 @@ call plug#end()
     " use <leader>x for convert visual selected code to snippet
     xmap <leader>x  <plug>(coc-convert-snippet)
 
-    inoremap <silent><expr> <TAB>
-          \ pumvisible() ? coc#_select_confirm() :
-          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-          \ <SID>check_back_space() ? "\<TAB>" :
-          \ coc#refresh()
+    let g:coc_snippet_next = '<tab>'
+
+    " Include something like this and also check if there is only one option
+    " to immediately select and confirm 
+    " inorwmap <silent><expr> <TAB>
+    "       \ pumvisible() ? coc#_select_confirm() :
+
+    if exists('*complete_info')
+      inoremap <silent><expr> <cr> complete_info(['selected'])['selected'] != -1 ? "\<C-y>" : "\<C-g>u\<CR>"
+    endif
+
     function! s:check_back_space() abort
       let col = col('.') - 1
       return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
-    let g:coc_snippet_next = '<tab>'
-    
-  " Use tab for trigger completion with characters ahead and navigate.
-  " Use command ':verbose imap <tab>' to make sure tab is not mapped by another plugin.
-	" inoremap <silent><expr> <TAB>
-	" 		 \ pumvisible() ? "\<C-n>" :
-	" 		 \ "\<TAB>"
-	" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
+    "
+    " Use tab for trigger completion with characters ahead and navigate.
+    " Use command ':verbose imap <tab>' to make sure tab is not mapped by another plugin.
+    inoremap <silent><expr> <TAB>
+    		 \ pumvisible() ? "\<C-n>" :
+          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+          \ <SID>check_back_space() ? "\<TAB>" :
+          \ coc#refresh()
+    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<c-h>"
+
+    " Use <c-space> to trigger completion.
+    if has('nvim')
+      inoremap <silent><expr> <c-space> pumvisible() ? "\<c-e>" : coc#refresh()
+    else
+      inoremap <silent><expr> <c-@> coc#refresh()
+    endif
+
+
+  "COC-EXPLORER CONFIG
   nnoremap <leader>e <Cmd>CocCommand explorer<CR>
+
+  " Use coc-explorer instead of netrw as default fileexplorer 
+  function! s:DisableFileExplorer()
+      au! FileExplorer
+  endfunction
+
+  function! s:OpenDirHere(dir)
+      if isdirectory(a:dir)
+        exec "silent CocCommand explorer " . a:dir
+      endif
+  endfunction
+
+  " Taken from vim-easytree plugin, and changed to use coc-explorer
+  augroup CocExplorerDefault
+      autocmd!
+      autocmd VimEnter * call <SID>DisableFileExplorer()
+      autocmd BufEnter * if &ft != "coc-list" && &ft != "coc-explorer" | call <SID>OpenDirHere(expand('<amatch>'))
+      autocmd VimEnter * cd %:p:h 
+  augroup end
+
+  function! s:ChangeDir()
+    silent call CocAction('runCommand', 'explorer.doAction', 0, ['copyFilepath']) 
+    if isdirectory(getreg('+'))
+      execute 'cd '.getreg('+')
+      echo 'change working directory to: '.getreg('+')
+    endif
+  endfunction
+
+	augroup cocexplorer
+    autocmd FileType coc-explorer map <silent><buffer> cd :call <SID>ChangeDir()<cr>
+  augroup end
+
 	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
 		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
-	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
-		\ fzf#wrap({'dir': expand('%:p:h')}))
-
-	" Use <c-space> to trigger completion.
-	if has('nvim')
-		inoremap <silent><expr> <c-space> coc#refresh()
-	else
-		inoremap <silent><expr> <c-@> coc#refresh()
-	endif
 
 	" Use `[g` and `]g` to navigate diagnostics
 	noremap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -692,15 +765,15 @@ call plug#end()
 	nnoremap <silent><nowait> <leader>cp  :<C-u>CocListResume<CR>
 
 	" Toggle panel with Tree Views
-	nnoremap <silent> <leader>t :<C-u>CocCommand metals.tvp<CR>
+	nnoremap <silent> <leader>mt :<C-u>CocCommand metals.tvp<CR>
 	" Toggle Tree View 'metalsPackages'
-	nnoremap <silent> <leader>tp :<C-u>CocCommand metals.tvp metalsPackages<CR>
+	nnoremap <silent> <leader>mtp :<C-u>CocCommand metals.tvp metalsPackages<CR>
 	" Toggle Tree View 'metalsCompile'
-	nnoremap <silent> <leader>tc :<C-u>CocCommand metals.tvp metalsCompile<CR>
+	nnoremap <silent> <leader>mtc :<C-u>CocCommand metals.tvp metalsCompile<CR>
 	" Toggle Tree View 'metalsBuild'
-	nnoremap <silent> <leader>tb :<C-u>CocCommand metals.tvp metalsBuild<CR>
+	nnoremap <silent> <leader>mtb :<C-u>CocCommand metals.tvp metalsBuild<CR>
 	" Reveal current current class (trait or object) in Tree View 'metalsPackages'
-	nnoremap <silent> <leader>tf :<C-u>CocCommand metals.revealInTreeView metalsPackages<CR>
+	nnoremap <silent> <leader>mtf :<C-u>CocCommand metals.revealInTreeView metalsPackages<CR>
 
 	" Remap for rename current word
 	noremap <leader>rn <Plug>(coc-rename)
@@ -727,12 +800,11 @@ call plug#end()
 		autocmd FileType scala setl formatexpr=CocAction('formatSelected')
 		" Update signature help on jump placeholder
 		autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+    " Highlight symbol under cursor on CursorHold
+    autocmd CursorHold * silent call CocActionAsync('highlight')
+    " In order to get comment highlighting in json
+    autocmd FileType json syntax match Comment +\/\/.\+$+
 	augroup end
-
-	" Highlight symbol under cursor on CursorHold
-	autocmd CursorHold * silent call CocActionAsync('highlight')
-	" In order to get comment highlighting in json
-	autocmd FileType json syntax match Comment +\/\/.\+$+
 
 	" Use `:Format` to format current buffer
 	command! -nargs=0 Format :call CocAction('format')
@@ -742,6 +814,305 @@ call plug#end()
 
 	" Add `:OR` command for organize imports of the current buffer.
 	command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+" ---------------------------------------------------------------------------
+
+
+" ---------------------------------------------------------------------------
+" PLUGIN STARTIFY CONFIG:
+" ---------------------------------------------------------------------------
+" USAGE: Commands start with :S like :SSave to save a session. To start
+" Startify use :Startify
+  let g:startify_lists = [
+            \ { 'type': 'files',     'header': ['   Files']            },
+            \ { 'type': 'dir',       'header': ['   Current Dir '. getcwd()] },
+            \ { 'type': 'sessions',  'header': ['   Sessions']       },
+            \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+            \ { 'type': 'commands',  'header': ['   Commands']       },
+            \ ]
+  "TODO: Create commands to setup different kinds of projects
+  let g:startify_commands = [
+            \ ['Vim Reference', 'h ref'],
+            \ ]
+  " \ {'m': ['My magical function', 'call Magic()']},
+  let g:startify_skiplist = [
+            \ 'COMMIT_EDITMSG',
+            \ 'bundle/.*/doc',
+            \ '/data/repo/neovim/runtime/doc',
+            \ '/Users/mhi/local/vim/share/vim/vim74/doc',
+            \ ]
+  let g:startify_bookmarks = [ {'c': '~/.vimrc'}, {'aa': '~/AndroidStudioProjects/anovi-app'}, {'aw': '~/Schreibtisch/anovi_website'}, {'n': '~/OneDrive/notes'}, {'gi': '~/.gitconfig'}, {'co': '~/config/nvim/coc-settings.json'}, {'bf': '~/.bash_functions'}, {'ba': '~/.bash_aliases'}, {'br': '~/.bashrc'}]
+  let g:startify_update_oldfiles = 1
+  let g:startify_files_number = 10
+  let g:startify_change_cmd = 'cd'
+  let g:startify_session_persistence = 1
+  let g:startify_session_autoload = 1
+  let g:startify_session_delete_buffers = 1
+  let g:startify_change_to_vcs_root = 1
+  let g:startify_fortune_use_unicode = 1
+  let g:startify_enable_special = 0
+  let g:startify_session_dir = '~/.config/nvim/session'
+  function! s:get_random_offset(max) abort
+    return str2nr(matchstr(reltimestr(reltime()), '\.\zs\d\+')[1:]) % a:max
+  endfunction
+  function! Update_asci_art()
+    let g:startify_custom_header = map(startify#fortune#boxed() + g:asci_art[<SID>get_random_offset(len(g:asci_art))], '"   ".v:val')
+  endfunction
+  " Define the size of the floating window
+  function! OpenFloatingWindow()
+    let width = 80
+    let height = 50 
+
+    " Create the scratch buffer displayed in the floating window
+    let buf = nvim_create_buf(v:false, v:true)
+
+    " Get the current UI
+    let ui = nvim_list_uis()[0]
+
+    " Create the floating window
+    let opts = {'relative': 'editor',
+                \ 'width': width,
+                \ 'height': height,
+                \ 'col': (ui.width/2) - (width/2),
+                \ 'row': (ui.height/2) - (height/2),
+                \ 'anchor': 'NW',
+                \ 'border': 'single',
+                \ 'style': 'minimal',
+                \ }
+    let win = nvim_open_win(buf, 1, opts)
+  endfunction
+  function! ToggleStartify()
+    if &ft != 'Startify'
+      call Update_asci_art()
+      call OpenFloatingWindow()
+      execute "Startify"
+    else
+      execute "q"
+    endif
+  endfunction
+  if has('nvim')
+    function! SwitchWindowAfterStartifyOpen()
+      let currentBuffer = nvim_get_current_buf()
+      let currentWindow = nvim_get_current_win()
+      "TODO check if window is a floating window
+      if !empty(nvim_win_get_config(currentWindow).relative)
+        call nvim_win_close(currentWindow, 0)
+        let previousWindow = nvim_get_current_win()
+        call nvim_win_set_buf(previousWindow, currentBuffer)
+      endif
+    endfunction
+    autocmd User StartifyBufferOpened call SwitchWindowAfterStartifyOpen()
+  endif
+  "   
+  " Wenn floating window -> aktuelles floating window schließen ansonsten
+  " nichts tun
+  " neues Window in vsplit öffnen
+  "
+  nnoremap <leader><tab> :call ToggleStartify()<cr>
+  autocmd User Startified setlocal cursorline
+
+  let g:asci_art = [[
+        \"⠀⠀⣀⣀⣤⣤⣦⣶⢶⣶⣿⣿⣿⣿⣿⣿⣿⣷⣶⣶⡄⠀⠀⠀⠀⠀",
+        \"⠀⠀⣿⣿⣿⠿⣿⣿⣾⣿⣿⣿⣿⣿⣿⠟⠛⠛⢿⣿⡇⠀⠀⠀⠀⠀",
+        \"⠀⠀⣿⡟⠡⠂⠀⢹⣿⣿⣿⣿⣿⣿⡇⠘⠁⠀⠀⣿⡇⠀⢠⣄⠀⠀",
+        \"⠀⠀⢸⣗⢴⣶⣷⣷⣿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣴⣿⣗⣄⣼⣷⣶⡄",
+        \"⠀⢀⣾⣿⡅⠐⣶⣦⣶⠀⢰⣶⣴⣦⣦⣶⠴⠀⢠⣿⣿⣿⣿⣼⣿⡇",
+        \"⢀⣾⣿⣿⣷⣬⡛⠷⣿⣿⣿⣿⣿⣿⣿⠿⠿⣠⣿⣿⣿⣿⣿⠿⠛⠃",
+        \"⢸⣿⣿⣿⣿⣿⣿⣿⣶⣦⣭⣭⣥⣭⣵⣶⣿⣿⣿⣿⣟⠉⠀⠀⠀⠀",
+        \"⠀⠙⠇⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⣿⣿⣿⣿⣿⣛⠛⠛⠛⠛⠛⢛⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠿⣿⣿⣿⠿⠿⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⠿⠇⠀⠀⠀⠀⠀"],
+        \[
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⡠⠔⠉⠀⠀⠀⠀⠀⠉⠒⢄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⢀⣞⣀⣀⡀⠀⢀⣀⣀⣀⡀⠀⠀⠱⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⡌⢾⣿⡇⠀⠀⠰⣿⣷⠀⠀⠀⠀⢀⢱⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⡇⠀⠉⠀⠀⠀⣠⣬⣵⣤⣄⠀⠀⠀⠙⡄⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⢣⠀⠀⠀⠴⢿⣿⣿⣿⣿⠟⡣⡀⠀⣠⠃⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠳⡀⠀⠀⠀⠈⠉⠉⠉⠁⠂⢁⠞⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠠⢦⣤⣀⡀⠀⠈⠒⠤⣀⣀⡀⣀⣀⠤⠐⠳⣦⣤⣤⣤⠶⠶⠶⢦⣤⡀⠀",
+        \"⠀⠀⠀⠀⠈⠉⠙⠛⠻⠶⠶⠶⠶⠶⠶⠶⠶⠾⡟⠋⠻⣶⡒⠒⠦⠤⡤⡈⢻⡆",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡇⢀⠀⠘⣷⠀⠀⠀⡇⡇⣸⠇",
+        \"⠀⠀⠀⣀⣀⣀⣀⣠⣤⣤⣤⣤⣤⣖⣺⢻⣝⣋⣽⣳⣶⣶⣿⣦⡴⣼⢷⡟⠋⠀",
+        \"⠛⠛⠛⠉⠉⠉⠉⠉⠀⠀⠀⠀⠀⠳⣌⠉⠉⠉⣡⠞⠉⠉⠛⠳⢶⣼⢸⠂⠀⠀",
+        \" ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠉⠀⠀⠀⠀⠀⠀⠀⠙⣿⡀⠀⠀"],
+        \[
+        \"⠀⠀⠀⠀⠀⠀⣠⣀⣀⣀⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀   ",
+        \"⠀⠀⠀⠀⢀⣀⣕⡋⠘⠐⠂⡑⠃⠉⢲⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀  ",
+        \"⠀⠀⠀⠀⠀⢻⠃⢀⡤⠰⡎⠈⣉⠀⠀⢸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ",
+        \"⠀⠀⠀⡀⢀⡎⠀⠠⣀⠀⠈⠉⠁⠠⢄⠈⡗⠲⣤⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ",
+        \"⠀⢥⣦⠶⣗⢩⣰⢈⢁⠀⣀⠀⠀⢀⠨⢠⠇⠀⢹⢳⡉⣓⣶⣄⠀⠀⠀⠀⠀⠀ ",
+        \"⠀⠀⠀⢀⠀⠉⠙⠢⠥⣄⣀⣀⣀⣤⠴⠋⠀⠀⢸⡎⣿⡀⠀⢹⣏⠉⠉⠒⢦⠀ ",
+        \"⠀⠀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣾⠀⢸⣇⣴⠈⣿⡄⠀⢀⠻⠀ ",
+        \"⣠⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠤⠴⣶⣭⣽⣻⣻⣯⣽⣿⣿⣀⣻⡇⠀⠀⡅⠀ ",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠐⠚⠋⠳⣀⣀⣀⣀⣀⣠⠞⠃⠀⠀⠉⠉⠉⠙⠓ "],
+        \[
+        \"⠄⠄⠄⠄⠄⠄⢀⣠⣤⣶⣶⣶⣤⣄⠄⠄⢀⣠⣤⣤⣤⣤⣀⠄⠄⠄⠄⠄⠄⠄",
+        \"⠄⠄⠄⠄⢠⣾⣿⣿⣿⣿⠿⠿⢿⣿⣿⡆⣿⣿⣿⣿⣿⣿⣿⣷⡄⠄⠄⠄⠄⠄",
+        \"⠄⠄⠄⣴⣿⣿⡟⣩⣵⣶⣾⣿⣷⣶⣮⣅⢛⣫⣭⣭⣭⣭⣭⣭⣛⣂⠄⠄⠄⠄",
+        \"⠄⠄⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣭⠛⣿⣿⣿⣿⣿⣿⣿⣿⣦⡀⠄",
+        \"⣠⡄⣿⣿⣿⣿⣿⣿⣿⠿⢟⣛⣫⣭⠉⠍⠉⣛⠿⡘⣿⠿⢟⣛⡛⠉⠙⠻⢿⡄",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⣶⣶⣶⣶⣭⣍⠄⣡⣬⣭⣭⣅⣈⣀⣉⣁⠄",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣶⣭⣛⡻⠿⠿⢿⣿⡿⢛⣥⣾⣿⣿⣿⣿⣿⣿⣿⠿⠋⠄",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⣩⣵⣾⣿⣿⣯⣙⠟⣋⣉⣩⣍⡁⠄⠄⠄",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣿⣿⣿⣿⣷⡄⠄⠄",
+        \"⣿⣿⣿⣿⣿⣿⡿⢟⣛⣛⣛⣛⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⡀⠄",
+        \"⣿⣿⣿⣿⣿⡟⢼⣿⣯⣭⣛⣛⣛⡻⠷⠶⢶⣬⣭⣭⣭⡭⠭⢉⡄⠶⠾⠟⠁⠄",
+        \"⣿⣿⣿⣿⣟⠻⣦⣤⣭⣭⣭⣭⣛⣛⡻⠿⠷⠶⢶⣶⠞⣼⡟⡸⣸⡸⠿⠄⠄⠄",
+        \"⣛⠿⢿⣿⣿⣿⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠷⡆⣾⠟⡴⣱⢏⡜⠆⠄⠄⠄",
+        \"⣭⣙⡒⠦⠭⣭⣛⣛⣛⡻⠿⠿⠟⣛⣛⣛⣛⡋⣶⡜⣟⣸⣠⡿⣸⠇⣧⡀⠄⠄",
+        \"⣿⣿⣿⣿⣷⣶⣦⣭⣭⣭⣭⣭⣭⣥⣶⣶⣶⡆⣿⣾⣿⣿⣿⣷⣿⣸⠉⣷⠄⠄"],
+        \[
+        \"⣿⣿⣿⣿⣿⣿⣿⠟⠋⠉⠁⠈⠉⠙⠻⢿⡿⠿⠛⠋⠉⠙⠛⢿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⠟⠁⠀⠀⢀⣀⣀⣀⣀⡀⠀⢆⠀⠀⠀⠀⠀⠀⠀⢻⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⠃⠀⠀⠠⠊⠁⠀⠀⠀⠀⠈⠑⠪⡖⠒⠒⠒⠒⠒⠒⠶⠛⠿⣿⣿⣿",
+        \"⣿⣿⡿⡇⠀⠀⠀⠀⠀⠀⡠⢔⡢⠍⠉⠉⠩⠭⢑⣤⣔⠲⠤⠭⠭⠤⠴⢊⡻⣿",
+        \"⡿⠁⢀⠇⠀⠀⠀⣤⠭⠓⠊⣁⣤⠂⠠⢀⡈⠱⣶⣆⣠⣴⡖⠁⠂⣀⠈⢷⣮⣹",
+        \"⠁⠀⠀⠀⠀⠀⠀⠈⠉⢳⣿⣿⣿⡀⠀⠀⢀⣀⣿⡿⢿⣿⣇⣀⣥⣤⠤⢼⣿⣿",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡟⠑⠚⢹⡟⠉⣑⠒⢺⡇⡀⠀⡹⠀⠀⣀⣴⣽⣿⣿",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⡇⠀⠀⣿⠒⠉⠀⠀⢠⠃⠈⠙⠻⣍⠙⢻⡻⣿⣿⣿",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⣀⣘⡄⠀⠀⢸⡇⠀⠀⠀⠘⡇⠀⠀⠀⠘⡄⠀⢱⢸⣿⣿",
+        \"⠀⠀⠀⠀⠠⡀⠀⠾⣟⣻⣛⠷⣶⣼⣥⣀⣀⣀⠀⢧⠀⠀⠀⠠⣧⣀⣼⣴⢽⣿",
+        \"⠀⠀⠀⠀⠀⠈⠉⠁⠀⠹⡙⠛⠷⣿⣭⣯⣭⣟⣛⣿⣿⣿⣛⣛⣿⣭⣭⣾⣿⣿",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⡀⠀⠀⣇⠀⠉⠉⠉⡏⠉⠙⠛⠛⡿⣻⣯⣷⣿⣿⣿",
+        \"⣶⣤⣀⠀⠀⠀⠀⠀⠀⠀⡇⠀⠀⢸⠀⠀⠀⡸⠁⣠⣴⣶⣿⣿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣶⣶⣦⣤⣤⣤⣷⣤⣄⣈⣆⣤⣤⣧⣶⣷⣿⡻⣿⣿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣾⢿⣿⣿⣿⣿⣿⣿"],
+        \[
+        \"⣿⣿⣿⣿⣿⣿⠿⢋⣥⣴⣶⣶⣶⣬⣙⠻⠟⣋⣭⣭⣭⣭⡙⠻⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⡿⢋⣴⣿⣿⠿⢟⣛⣛⣛⠿⢷⡹⣿⣿⣿⣿⣿⣿⣆⠹⣿⣿⣿⣿",
+        \"⣿⣿⣿⡿⢁⣾⣿⣿⣴⣿⣿⣿⣿⠿⠿⠷⠥⠱⣶⣶⣶⣶⡶⠮⠤⣌⡙⢿⣿",
+        \"⣿⡿⢛⡁⣾⣿⣿⣿⡿⢟⡫⢕⣪⡭⠥⢭⣭⣉⡂⣉⡒⣤⡭⡉⠩⣥⣰⠂⠹",
+        \"⡟⢠⣿⣱⣿⣿⣿⣏⣛⢲⣾⣿⠃⠄⠐⠈⣿⣿⣿⣿⣿⣿⠄⠁⠃⢸⣿⣿⡧",
+        \"⢠⣿⣿⣿⣿⣿⣿⣿⣿⣇⣊⠙⠳⠤⠤⠾⣟⠛⠍⣹⣛⣛⣢⣀⣠⣛⡯⢉⣰",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡶⠶⢒⣠⣼⣿⣿⣛⠻⠛⢛⣛⠉⣴⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⡿⢛⡛⢿⣿⣿⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡈⢿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⠸⣿⡻⢷⣍⣛⠻⠿⠿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⢇⡘⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⣷⣝⠻⠶⣬⣍⣛⣛⠓⠶⠶⠶⠤⠬⠭⠤⠶⠶⠞⠛⣡⣿",
+        \"⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣬⣭⣍⣙⣛⣛⣛⠛⠛⠛⠿⠿⠿⠛⣠⣿⣿",
+        \"⣦⣈⠉⢛⠻⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠿⠛⣁⣴⣾⣿⣿⣿⣿",
+        \"⣿⣿⣿⣶⣮⣭⣁⣒⣒⣒⠂⠠⠬⠭⠭⠭⢀⣀⣠⣄⡘⠿⣿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡈⢿⣿⣿⣿⣿⣿"],
+        \[
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⠿⠿⠿⠿⠿⠿⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⣉⡥⠶⢶⣿⣿⣿⣿⣷⣆⠉⠛⠿⣿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⡿⢡⡞⠁⠀⠀⠤⠈⠿⠿⠿⠿⣿⠀⢻⣦⡈⠻⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⡇⠘⡁⠀⢀⣀⣀⣀⣈⣁⣐⡒⠢⢤⡈⠛⢿⡄⠻⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⡇⠀⢀⣼⣿⣿⣿⣿⣿⣿⣿⣿⣶⣄⠉⠐⠄⡈⢀⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⠇⢠⣿⣿⣿⣿⡿⢿⣿⣿⣿⠁⢈⣿⡄⠀⢀⣀⠸⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⡿⠟⣡⣶⣶⣬⣭⣥⣴⠀⣾⣿⣿⣿⣶⣾⣿⣧⠀⣼⣿⣷⣌⡻⢿⣿",
+        \"⣿⣿⠟⣋⣴⣾⣿⣿⣿⣿⣿⣿⣿⡇⢿⣿⣿⣿⣿⣿⣿⡿⢸⣿⣿⣿⣿⣷⠄⢻",
+        \"⡏⠰⢾⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿⠟⢂⣭⣿⣿⣿⣿⣿⠇⠘⠛⠛⢉⣉⣠⣴⣾",
+        \"⣿⣷⣦⣬⣍⣉⣉⣛⣛⣉⠉⣤⣶⣾⣿⣿⣿⣿⣿⣿⡿⢰⣿⣿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡘⣿⣿⣿⣿⣿⣿⣿⣿⡇⣼⣿⣿⣿⣿⣿⣿⣿⣿",
+        \"⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣇⢸⣿⣿⣿⣿⣿⣿⣿⠁⣿⣿⣿⣿⣿⣿⣿⣿⣿"],
+        \[
+        \" ⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠀⠀⠀⠈⠿⠟⠉⠀⠀⠀⢀⣿⠇⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⣿⡿⠿⠿⠿⠷⣶⣾⡿⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⣤⣤⣴⣶⣶⡀",
+        \"⠀⠀⠀⠹⣿⡀⠀⠀⠀⠀⠀⠀⢀⡤⠖⠚⠉⠉⠉⠉⠛⠲⣄⠀⠈⠉⠉⠉⠁⣼⡟⠀",
+        \"⠀⠀⠀⠀⠹⣷⡀⠀⠀⠀⢀⡔⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠳⡄⠀⠀⢀⣼⡟⠀⠀",
+        \"⠀⠀⠀⠀⠀⢹⣷⠀⠀⢀⡎⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢹⡀⢠⣾⡏⠀⠀⠀",
+        \"⠀⢀⣠⣴⡾⠟⠋⠀⠀⣸⠀⠀⠀⣴⣒⣒⣛⣛⣛⣋⣉⣉⣉⣙⣛⣷⠀⠙⠿⣶⣤⡀",
+        \"⣾⣿⡋⠁⠀⠀⠀⠀⠀⡏⠀⠀⡄⠉⠉⠁⠀⠈⢹⢨⠃⠀⠀⠀⠀⠙⡄⠀⠀⣨⣿⠟",
+        \"⠈⠛⠿⣷⣦⣀⠀⠀⠀⡇⠀⠸⡟⠛⠿⠛⠛⠛⢻⢿⠋⠹⠟⠉⠉⠙⡇⣠⣾⠟⠁⠀",
+        \"⠀⠀⠀⢀⣽⣿⠇⠀⠀⡇⠀⠀⠳⣄⣀⠀⣀⣠⠞⠈⢷⣄⣀⣀⣠⣾⠁⢿⣧⡀⠀⠀",
+        \"⠀⢠⣴⡿⠋⠁⠀⠀⢀⡧⠄⠀⠦⣀⣈⣉⠁⠀⠠⡀⠘⡆⠠⠤⠴⢿⣄⠀⠙⣿⣦⠀",
+        \"⠀⠹⢿⣦⣤⣀⠀⢰⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠳⣤⠇⠀⠀⠀⣼⢘⣷⡿⠟⠋⠀",
+        \"⠀⠀⠀⠈⠉⣿⡇⠈⠣⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⡿⠻⣿⡀⠀⠀⠀",
+        \"⠀⠀⠀⠀⢸⣿⣤⣤⣤⣤⢧⠀⢀⡆⣠⠴⠒⠋⢹⠋⠉⢹⠗⠒⠄⣷⣾⡿⠇⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠉⠉⠉⣿⣇⣈⣆⠀⠳⠤⠀⠀⠀⠈⣇⡖⡍⠀⠠⣾⣿⡿⠇⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠛⠛⠛⢻⣷⣄⠀⠀⠀⠀⠁⠉⠀⠀⣠⣾⠟⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣉⣿⣷⠲⠤⠤⠤⣤⣶⣿⣟⠁⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⢀⣴⣶⡿⠿⠛⠛⢋⢹⡦⣄⣀⡤⢿⢉⠛⠛⠿⣷⣦⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⣿⠏⠀⠀⠀⠀⢀⠇⠈⡇⠀⠀⠀⠘⡎⣆⠀⠀⠀⢻⣧⠀⠀⠀⠀⠀"],
+        \[
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣤⣀⠀⢀⣼⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣷⣾⣿⣿⣷⣤⣤⣶⠂⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠻⣶⣿⣿⣿⣿⣿⣿⣿⣿⣿⡏⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣹⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⡦⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣘⣻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣍⣀⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠉⢽⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡟⠋⠉⠉⠉⠉⠉⠉⠉⠉⠉⠉⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⣸⣀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⡛⣃⣤⣄⠀⠀⠀⠀⠀⣀⣀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠛⠻⣿⣿⣿⣆⠙⠻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣧⡀⠀⢠⣿⣿⣟⠛⠛⡏⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠉⣿⣿⣆⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⣼⣿⡟⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠘⣿⣿⡆⢰⣿⡏⠈⢻⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠘⣿⣿⣿⣿⠃⠀⠀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠘⣿⣿⡏⠀⠀⠀⠀⠈⠻⣿⣿⣿⣿⣿⣿⣿⣿⣷⡀⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠘⠟⠁⠀⠀⠀⠀⠀⠀⠙⣿⣿⣿⣿⣿⣿⣿⣿⣷⠀⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠸⣿⣿⣿⣿⣿⣿⣿⣿⣇⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⠓⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠒⠚⠛⠛⠛⠛⠛⠛⠛⠛⠛⠛⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⣠⣶⢶⣦⠀⣶⡶⠶⠆⣠⣶⣶⣶⣦⠀⠀⠀⣠⡶⢶⣦⠀⢀⣴⡶⣶⣦⢀⣶⠀⠰⣦⠀⣶⡄⠀⣶⠀⢰⡆⢰⣆⠀⣴⣶⠶⡆⣶⣶⣶⣶⣆⣶⡆⠀⢀⣦",
+        \"⣸⡟⠀⠀⠀⠀⣿⣦⣤⠀⠉⠀⣿⡆⠀⠀⠀⠀⢿⣷⣤⡀⠀⣾⡏⠀⠀⠁⢸⣿⣤⣴⣿⡆⣿⡇⢠⣿⠀⣸⡇⢸⣿⠀⣿⣥⣤⠀⠈⢹⣿⠀⠀⠸⣿⣄⣼⠇",
+        \"⢻⣧⡀⢸⣿⢀⣿⠉⠀⠀⠀⠀⣿⡇⠀⠀⠀⠠⣦⡈⠙⣿⡆⢿⣧⡀⢀⣠⢸⣿⠉⠀⣿⡇⢹⣧⣼⢿⣦⡿⠀⢸⣿⠀⣿⡏⠉⠀⠀⢸⣿⠀⠀⠀⢹⣿⠏⠀",
+        \"⠈⠻⠿⠿⠋⠸⠟⠛⠛⠓⠀⠀⠿⠃⠀⠀⠀⠀⠙⠿⠿⠟⠁⠈⠻⠿⠿⠃⠘⠟⠀⠀⠛⠁⠀⠻⠃⠈⠛⠁⠀⠘⠟⠀⠻⠇⠀⠀⠀⠸⠿⠀⠀⠀⠺⠿⠀⠀"],
+        \[
+        \"    ,'``.._   ,'``.                             ",
+        \"     :,--._:)\\,:,._,.:       All Glory to      ",
+        \"     :`--,''   :`...';\\      the HYPNO TOAD!   ",
+        \"      `,'       `---'  `.                       ",
+        \"      /                 :                       ",
+        \"     /                   \\                     ",
+        \"   ,'                     :\\.___,-.            ",
+        \"  `...,---'``````-..._    |:       \\           ",
+        \"    (                 )   ;:    )   \\  _,-.    ",
+        \"     `.              (   //          `'    \\   ",
+        \"      :               `.//  )      )     , ;    ",
+        \"    ,-|`.            _,'/       )    ) ,' ,'    ",
+        \"   (  :`.`-..____..=:.-':     .     _,' ,'      ",
+        \"    `,'\\ ``--....-)='    `._,  \\  ,') _ '``._ ",
+        \" _.-/ _ `.       (_)      /     )' ; / \\ \\`-.'",
+        \"`--(   `-:`.     `' ___..'  _,-'   |/   `.)     ",
+        \"    `-. `.`.``-----``--,  .'                    ",
+        \"      |/`.\\`'        ,','); SSt                ",
+        \"          `         (/  (/                      "],
+        \[
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡜⢣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⠎⡴⢦⠱⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⢎⣜⣉⣉⣧⡱⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⣠⢃⡞⠒⣒⣒⠒⢳⡘⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⣰⢡⣎⡩⠭⠤⠤⠭⢍⣱⡜⣆⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⡴⢡⡯⠴⢒⣈⣩⣉⣑⡒⠠⣹⡌⢦⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⡔⣡⣣⠔⡺⡋⡁⢀⡀⢈⠙⢟⠢⣝⣄⢢⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⢀⡜⣰⡟⠁⢰⡓⢎⣀⣸⣿⣷⡱⢚⡆⠈⢻⣆⢣⡀⠀⠀⠀⠀",
+        \"⠀⠀⠀⢀⠎⡼⣇⠣⡀⠸⡄⢊⢿⣿⣿⡿⡑⢠⠇⢀⠜⣸⢧⠱⡀⠀⠀⠀",
+        \"⠀⠀⢠⢋⢼⡙⢌⠳⣍⠲⢽⣄⣁⠂⠐⣈⣠⡯⠔⣡⠞⡡⢊⣧⡙⡄⠀⠀",
+        \"⠀⣠⢃⣞⠣⡙⠦⡑⠦⣍⡒⠤⠬⠭⠭⠥⠤⢒⣩⠴⢊⠴⢋⠜⣳⡘⣄⠀",
+        \"⣰⣃⣛⣚⣓⣚⣓⣚⣓⣒⣛⣛⣓⣒⣒⣚⣛⣛⣒⣚⣓⣚⣓⣚⣒⣛⣘⣆"],
+        \[
+        \"⠀⠀⠀⠀⠀⣴⠉⡙⠳⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢀⣠⠤⣚⡯⠴⢬⣱⡀⠀",
+        \"⠀⠀⠀⠀⢰⡇⣷⡌⢲⣄⡑⢢⡀⠀⠀⠀⠀⠀⢠⠾⢋⠔⣨⣴⣿⣷⡌⠇⡇ ",
+        \"⠀⠀⠀⠀⢸⢹⣿⣿⣄⢻⣿⣷⣝⠷⢤⣤⣤⡶⢋⣴⣑⠟⠿⠿⠿⣿⣿⡀⡇⠀",
+        \"⠀⠀⠀⠀⢸⢸⣿⡄⢁⣸⣿⣋⣥⣶⣶⣶⣶⣶⣶⣿⣿⣶⣟⡁⠚⣿⣿⡇⡇⠀",
+        \"⢀⣠⡤⠤⠾⡘⠋⢀⣘⠋⠉⠉⠉⠉⢭⣭⣭⣭⣍⠉⢩⣭⠉⠉⠂⠙⠛⠃⣇⡀",
+        \"⠏⠀⠀⢿⣿⣷⡀⠀⢿⡄⠀⠀⠀⠀⠀⠀⢿⣿⣿⣿⣆⠀⢿⣇⠀⠀⠀⠀⠀⠀",
+        \"⣦⠀⠀⠈⢿⣿⣧⠀⠘⣿⠀⠀⠀⡀⠀⠀⠘⣿⣿⣿⣿⡆⠀⢻⡆⠀⠀⠀⠀⠀",
+        \"⢻⡄⠀⠀⠘⠛⠉⠂⠀⠙⠁⠀⣼⣧⠀⠀⠀⠈⠀⠀⠈⠙⠀⠘⠓⠀⠀⠀⠀⠀",
+        \"⠀⢳⡀⠀⠀⠀⠀⠀⠀⠀⠀⠸⠿⣿⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠛⢶⢰⣶⢢⣤⣤⣄⠲⣶⠖⠀⣙⣀⠀⠀⠀⠤⢤⣀⣀⡀⣀⣠⣾⠟⡌⠀",
+        \"⠀⠀⠀⠘⢄⠃⣿⣿⣿⣿⠗⠀⠾⢿⣿⣿⣿⣿⣿⣿⣶⣶⣶⣶⠸⠟⣡⣤⡳⢦",
+        \"⠀⠀⠀⠀⠀⢻⡆⣙⡿⢷⣾⣿⣶⣾⣿⣿⣿⣿⣿⣿⣿⡿⠟⢡⣴⣾⣿⣿⣿⣦",
+        \"⠀⠀⠀⠀⠀⡼⢁⡟⣫⣶⣍⡙⠛⠛⠛⠛⠛⣽⡖⣉⣠⣶⣶⣌⠛⢿⣿⣿⣿⣿",
+        \"⠀⠀⠀⢀⠔⢡⢎⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⠹⣿⣿⣿",
+        \"⠀⢠⠖⢁⣴⡿⣼⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡇⢹⣿⣿"],
+        \[
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⡤⠶⠶⠶⠶⠤⢤⣀⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠳⠤⠶⠶⠦⠤⣄⡈⠙⠲⣄⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠉⠳⣄⠈⢳⡀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⢀⡴⠋⠁⠀⠉⠑⠦⡀⠀⠀⠀⠀⠀⠀⠈⢳⡀⠹⡄",
+        \"⠀⠀⠀⠀⠀⠀⢀⡏⠀⠀⣠⡀⠀⠀⠀⠘⡆⠀⠀⠀⠀⠀⠀⠀⢳⣀⡇",
+        \"⠀⠀⠀⠀⠀⠀⢸⡀⠀⠀⠈⠀⠀⠀⠀⠀⣷⠖⠋⠉⠑⠒⠦⣄⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⢠⢧⡀⠀⠀⠀⠀⠀⢀⡼⠁⠀⠀⠀⠀⠀⠀⠈⢧⠀⠀",
+        \"⠀⠀⣀⡤⠤⢤⣘⢦⡙⠢⠤⢤⡤⠴⠋⡇⠀⠀⠀⠐⠶⠀⠀⠀⢸⠀⠀",
+        \"⠀⡼⢁⣴⣶⣶⣌⠑⠉⠑⢠⠞⠀⠀⠀⢳⡀⠀⠀⠀⠀⠀⠀⢀⡼⠀⠀",
+        \"⢸⠁⣿⣿⣿⣿⣷⠷⣄⠀⣏⣀⡴⠊⠀⠀⠙⠦⢄⣀⣀⣀⡤⠚⠁⠀⠀",
+        \"⠸⡄⣿⣿⣿⣿⣿⣿⡏⢳⣄⣀⠀⠀⠀⠀⠑⢦⣀⣀⣀⡄⠀⠀⠀⠀⠀",
+        \"⠀⢳⡸⡿⣿⣿⣿⣿⣿⣿⣤⣿⣩⣿⣩⣷⣶⣤⡀⠀⡄⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠱⣝⢿⢻⣿⣿⣿⣿⣿⣿⠻⠿⢿⣿⣿⣿⣿⣦⠹⡄⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠈⠓⠙⢦⣿⠛⣿⣿⣿⣷⣦⠀⠙⣿⣿⣿⣿⡇⡇⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠈⠑⠯⣼⡿⠛⡿⣇⠀⢹⣿⣿⡿⣰⠃⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠙⠓⢛⣒⢛⣋⡩⠞⠁⠀⠀⠀⠀⠀⠀",
+        \"⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀ "]]
+  let a = Update_asci_art()
 " ---------------------------------------------------------------------------
 
 
