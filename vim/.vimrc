@@ -578,7 +578,6 @@ call plug#end()
     let bufNr = floaterm#buflist#curr()
     let currentFloatermName = floaterm#terminal#get_bufname(bufnr)
   endfunction
-  let g:floaterm_keymap_toggle = '<leader>;'
   let g:floaterm_keymap_new = ';t'
   let g:floaterm_opener = 'edit'
   tnoremap ;x <cmd>FloatermKill(s:currentFloatermName())<cr><cmd>FloatermShow()<cr>
