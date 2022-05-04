@@ -578,14 +578,14 @@ call plug#end()
     let bufNr = floaterm#buflist#curr()
     let currentFloatermName = floaterm#terminal#get_bufname(bufnr)
   endfunction
-  let g:floaterm_keymap_new = ';t'
+  let g:floaterm_keymap_new = ',t'
   let g:floaterm_opener = 'edit'
-  tnoremap ;x <cmd>FloatermKill(s:currentFloatermName())<cr><cmd>FloatermShow()<cr>
-  tnoremap ;n <cmd>FloatermNext<cr>
-  tnoremap ;p <cmd>FloatermPrev<cr>
-  tnoremap ;q <cmd>FloatermHide<cr>
-  tnoremap ;<space> <cmd>FloatermToggle<cr>
-  nnoremap <leader>; <cmd>FloatermToggle<cr>
+  tnoremap ,x <cmd>FloatermKill(s:currentFloatermName())<cr><cmd>FloatermShow()<cr>
+  tnoremap ,n <cmd>FloatermNext<cr>
+  tnoremap ,p <cmd>FloatermPrev<cr>
+  tnoremap ,q <cmd>FloatermHide<cr>
+  tnoremap ,<space> <cmd>FloatermToggle<cr>
+  nnoremap <leader>, <cmd>FloatermToggle<cr>
 " TODO: Also checkout LazyDocker
   " Use key mapping <A-]> to send the <esc> key to the terminal
 	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
