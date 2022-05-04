@@ -28,6 +28,8 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - FLoaterm: FLoaterm command in termina lto open files does not work
+"  - Cant close nvim when opening a folder with nvim
 "  - Move between tabs with h and l keybinding combination
 "  - Automatic project creation
 "  - Templates(file creation) for e.g. notes(see obsidian), classes etc.
@@ -376,8 +378,6 @@ call plug#end()
     nnoremap <leader>p "0p
     nnoremap <silent> <Leader>+ :vertical resize +5<CR>
     nnoremap <silent> <Leader>- :vertical resize -5<CR>
-    " fast lex commandleader
-    "nnoremap <leader>e :Lex<CR> Currently replaced by coc-explorer
     " Move between tabs
     nnoremap <leader>1 :tabnext 1<CR>
     nnoremap <leader>2 :tabnext 2<CR>
