@@ -28,6 +28,7 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - Move between tabs with h and l keybinding combination
 "  - Automatic project creation
 "  - Templates(file creation) for e.g. notes(see obsidian), classes etc.
 "  - Replace search tool for / and ? to make it work with fuzzy search
