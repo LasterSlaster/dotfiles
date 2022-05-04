@@ -415,7 +415,21 @@ call plug#end()
 
 
   " ---------------------------------------------------------------------------
-  " PLUGIN WINSHIFT CONFIG:
+  " PLUGIN COLORSCHEME CONFIG:
+  " ---------------------------------------------------------------------------
+    " If gruvbox plugin is install, sets gruvbox theme
+    " let g:gruvbox_guisp_fallback = "bg"
+    " colorscheme gruvbox
+    set background=dark
+    let g:tokyonight_style = "storm"
+    colorscheme tokyonight
+    " Make backgound transparent
+    " hi Normal guibg=NONE ctermbg=NONE
+  " ---------------------------------------------------------------------------
+
+
+  " ---------------------------------------------------------------------------
+  " PLUGIN VIMTEX CONFIG:
   " ---------------------------------------------------------------------------
     " let g:vimtex_view_method = 'zathura'
 
@@ -439,12 +453,12 @@ call plug#end()
     " Swap two windows:
     nnoremap <C-W>x <Cmd>WinShift swap<CR>
 
-  " If you don't want to use Win-Move mode you can create mappings for calling the
-  " move commands directly:
-  nnoremap <C-M-H> <Cmd>WinShift left<CR>
-  nnoremap <C-M-J> <Cmd>WinShift down<CR>
-  nnoremap <C-M-K> <Cmd>WinShift up<CR>
-  nnoremap <C-M-L> <Cmd>WinShift right<CR>
+    " If you don't want to use Win-Move mode you can create mappings for calling the
+    " move commands directly:
+    nnoremap <C-M-H> <Cmd>WinShift left<CR>
+    nnoremap <C-M-J> <Cmd>WinShift down<CR>
+    nnoremap <C-M-K> <Cmd>WinShift up<CR>
+    nnoremap <C-M-L> <Cmd>WinShift right<CR>
 " ---------------------------------------------------------------------------
 
 
@@ -518,20 +532,6 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN GRUVBOX CONFIG:
-" ---------------------------------------------------------------------------
-	" If gruvbox plugin is install, sets gruvbox theme
-	" let g:gruvbox_guisp_fallback = "bg"
-	" colorscheme gruvbox
-  set background=dark
-  let g:tokyonight_style = "storm"
-  colorscheme tokyonight
-	" Make backgound transparent
-  " hi Normal guibg=NONE ctermbg=NONE
-" ---------------------------------------------------------------------------
-
-
-" ---------------------------------------------------------------------------
 " PLUGIN FZF CONFIG:
 " ---------------------------------------------------------------------------
 	let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
@@ -591,7 +591,7 @@ call plug#end()
   nnoremap <leader>, <cmd>FloatermToggle<cr>
 " TODO: Also checkout LazyDocker
   " Use key mapping <A-]> to send the <esc> key to the terminal
-	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
+  nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
   " This way Esc key can be send to underlying program in termeinal
   tnoremap <A-]> <Esc>
   " Close floaterm with <esc> in normal mode 
