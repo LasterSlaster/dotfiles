@@ -711,7 +711,6 @@ call plug#end()
   augroup end
 
 	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
-		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
 
 	" Use `[g` and `]g` to navigate diagnostics
 	noremap <silent> [g <Plug>(coc-diagnostic-prev)
