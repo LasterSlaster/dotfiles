@@ -10,6 +10,8 @@
 " - Install lazygit:
 "	  - If lazygit is integrated in floaterm plugin and active you have to install
 "	  - lazygit from https://github.com/jesseduffield/lazygit
+"	- install python and pip
+"	- install npm
 "	- Install ag/rg/ripgrep/fd
 "	- CoC Installation
 " - install ctags with: sudo apt install universal-ctags
@@ -410,6 +412,7 @@ call plug#end()
     " TODO: Write a function that creates a variable amount of new lines
     
   " ---------------------------------------------------------------------------
+
 
   " ---------------------------------------------------------------------------
   " PLUGIN WINSHIFT CONFIG:
