@@ -876,7 +876,6 @@ call plug#end()
                 \ 'row': (ui.height/2) - (height/2),
                 \ 'anchor': 'NW',
                 \ 'border': 'single',
-                \ 'style': 'minimal',
                 \ }
     let win = nvim_open_win(buf, 1, opts)
   endfunction
