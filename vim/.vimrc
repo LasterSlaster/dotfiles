@@ -557,7 +557,7 @@ call plug#end()
 	nnoremap <leader>gc :GCheckout<CR>
 	nnoremap <leader>gs :G<CR>
   nnoremap <leader>gb :GBranches<CR>
-  nnoremap <leader>/ :BTags<cr>
+  nnoremap <leader>/ :BLines<cr>
 	nnoremap <leader>B :Buffer<CR>
 	nnoremap <leader>H :History<CR>
 	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
