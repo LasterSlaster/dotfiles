@@ -136,6 +136,7 @@
 " - <C-n> "Switch between floaterm tabs
 "   session. When open close window.
 " - ys[motion][character] "Surround a motion with a character
+" - yss[character] "Surround the current line with a character
 " - cs[motion][character] "Replace a character around a motion
 "   ds[motion][character] "Deleta a character around a motion
 " - gc "In visual mode toggels commenting of highlighted region
@@ -396,6 +397,7 @@ call plug#end()
     vnoremap <Tab> >gv
     vnoremap <S-Tab> <gv
     "Switch working directory to location of current file
+    "TODO: switch to location of current buffer, not file
     nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
     
@@ -590,6 +592,8 @@ call plug#end()
   " Use key mapping <A-]> to send the <esc> key to the terminal
 	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
   " This way Esc key can be send to underlying program in termeinal
+  " On ISO-Layout press <alt-left>+<altGr>+]
+  "access "]" key
   tnoremap <A-]> <Esc>
   " Close floaterm with <esc> in normal mode 
   au! FileType floaterm nnoremap <buffer> <Esc> <C-\><C-n>:q<cr>
