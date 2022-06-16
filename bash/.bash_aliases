@@ -41,6 +41,8 @@ alias vimrc='nvim ~/.vimrc'
 # open bashrc
 alias bashrc='nvim ~/.bashrc'
 
+alias vim='nvim'
+
 # git
 alias ginit='git init'
 alias gadd='git add'
