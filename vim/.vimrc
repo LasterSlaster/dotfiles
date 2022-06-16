@@ -10,6 +10,8 @@
 " - Install lazygit:
 "	  - If lazygit is integrated in floaterm plugin and active you have to install
 "	  - lazygit from https://github.com/jesseduffield/lazygit
+"	- install python and pip
+"	- install npm
 "	- Install ag/rg/ripgrep/fd
 "	- CoC Installation
 " - install ctags with: sudo apt install universal-ctags
@@ -29,6 +31,11 @@
 " NOTES:
 " ---------------------------------------------------------------------------
 "  - Sometimes relativenumbers are not enabled when opening a file e.g. '.vimrc'
+"  - FLoaterm: FLoaterm command in termina lto open files does not work
+"  - Cant close nvim when opening a folder with nvim
+"  - Move between tabs with h and l keybinding combination
+"  - Automatic project creation
+"  - Templates(file creation) for e.g. notes(see obsidian), classes etc.
 "  - Replace search tool for / and ? to make it work with fuzzy search
 "  - Improve setup to emulate important obsidian features, find tags and
 "  navigate links
@@ -132,6 +139,7 @@
 " - <C-n> "Switch between floaterm tabs
 "   session. When open close window.
 " - ys[motion][character] "Surround a motion with a character
+" - yss[character] "Surround the current line with a character
 " - cs[motion][character] "Replace a character around a motion
 "   ds[motion][character] "Deleta a character around a motion
 " - gc "In visual mode toggels commenting of highlighted region
@@ -374,8 +382,6 @@ call plug#end()
     nnoremap <leader>p "0p
     nnoremap <silent> <Leader>+ :vertical resize +5<CR>
     nnoremap <silent> <Leader>- :vertical resize -5<CR>
-    " fast lex commandleader
-    "nnoremap <leader>e :Lex<CR> Currently replaced by coc-explorer
     " Move between tabs
     nnoremap <leader>1 :tabnext 1<CR>
     nnoremap <leader>2 :tabnext 2<CR>
@@ -394,6 +400,7 @@ call plug#end()
     vnoremap <Tab> >gv
     vnoremap <S-Tab> <gv
     "Switch working directory to location of current file
+    "TODO: switch to location of current buffer, not file
     nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
     
@@ -409,8 +416,23 @@ call plug#end()
     
   " ---------------------------------------------------------------------------
 
+
   " ---------------------------------------------------------------------------
-  " PLUGIN WINSHIFT CONFIG:
+  " PLUGIN COLORSCHEME CONFIG:
+  " ---------------------------------------------------------------------------
+    " If gruvbox plugin is install, sets gruvbox theme
+    " let g:gruvbox_guisp_fallback = "bg"
+    " colorscheme gruvbox
+    set background=dark
+    let g:tokyonight_style = "storm"
+    colorscheme tokyonight
+    " Make backgound transparent
+    " hi Normal guibg=NONE ctermbg=NONE
+  " ---------------------------------------------------------------------------
+
+
+  " ---------------------------------------------------------------------------
+  " PLUGIN VIMTEX CONFIG:
   " ---------------------------------------------------------------------------
     " let g:vimtex_view_method = 'zathura'
 
@@ -434,12 +456,12 @@ call plug#end()
     " Swap two windows:
     nnoremap <C-W>x <Cmd>WinShift swap<CR>
 
-  " If you don't want to use Win-Move mode you can create mappings for calling the
-  " move commands directly:
-  nnoremap <C-M-H> <Cmd>WinShift left<CR>
-  nnoremap <C-M-J> <Cmd>WinShift down<CR>
-  nnoremap <C-M-K> <Cmd>WinShift up<CR>
-  nnoremap <C-M-L> <Cmd>WinShift right<CR>
+    " If you don't want to use Win-Move mode you can create mappings for calling the
+    " move commands directly:
+    nnoremap <C-M-H> <Cmd>WinShift left<CR>
+    nnoremap <C-M-J> <Cmd>WinShift down<CR>
+    nnoremap <C-M-K> <Cmd>WinShift up<CR>
+    nnoremap <C-M-L> <Cmd>WinShift right<CR>
 " ---------------------------------------------------------------------------
 
 
@@ -463,9 +485,9 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN GIT GUTTER CONFIG:
 " ---------------------------------------------------------------------------
-  nmap <leader>ghs <Plug>(GitGutterStageHunk)
-  nmap <leader>ghu <Plug>(GitGutterUndoHunk)
-  nmap <leader>ghp <Plug>(GitGutterPreviewHunk)
+  nnoremap <leader>ghs <Plug>(GitGutterStageHunk)
+  nnoremap <leader>ghu <Plug>(GitGutterUndoHunk)
+  nnoremap <leader>ghp <Plug>(GitGutterPreviewHunk)
 " ---------------------------------------------------------------------------
 
 
@@ -513,20 +535,6 @@ call plug#end()
 
 
 " ---------------------------------------------------------------------------
-" PLUGIN GRUVBOX CONFIG:
-" ---------------------------------------------------------------------------
-	" If gruvbox plugin is install, sets gruvbox theme
-	" let g:gruvbox_guisp_fallback = "bg"
-	" colorscheme gruvbox
-  set background=dark
-  let g:tokyonight_style = "storm"
-  colorscheme tokyonight
-	" Make backgound transparent
-  " hi Normal guibg=NONE ctermbg=NONE
-" ---------------------------------------------------------------------------
-
-
-" ---------------------------------------------------------------------------
 " PLUGIN FZF CONFIG:
 " ---------------------------------------------------------------------------
 	let g:fzf_layout = { 'window': { 'width': 0.9, 'height': 0.9 } }
@@ -555,7 +563,7 @@ call plug#end()
 	nnoremap <leader>gc :GCheckout<CR>
 	nnoremap <leader>gs :G<CR>
   nnoremap <leader>gb :GBranches<CR>
-  nnoremap <leader>/ :BTags<cr>
+  nnoremap <leader>/ :BLines<cr>
 	nnoremap <leader>B :Buffer<CR>
 	nnoremap <leader>H :History<CR>
 	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
@@ -576,19 +584,20 @@ call plug#end()
     let bufNr = floaterm#buflist#curr()
     let currentFloatermName = floaterm#terminal#get_bufname(bufnr)
   endfunction
-  let g:floaterm_keymap_toggle = '<leader>;'
-  let g:floaterm_keymap_new = ';t'
+  let g:floaterm_keymap_new = ',t'
   let g:floaterm_opener = 'edit'
-  tnoremap ;x <cmd>FloatermKill(s:currentFloatermName())<cr><cmd>FloatermShow()<cr>
-  tnoremap ;n <cmd>FloatermNext<cr>
-  tnoremap ;p <cmd>FloatermPrev<cr>
-  tnoremap ;q <cmd>FloatermHide<cr>
-	" let g:floaterm_keymap_next = '<leader>tn'
-	" let g:floaterm_keymap_kill = '<leader>tx'
+  tnoremap ,x <cmd>FloatermKill(s:currentFloatermName())<cr><cmd>FloatermShow()<cr>
+  tnoremap ,n <cmd>FloatermNext<cr>
+  tnoremap ,p <cmd>FloatermPrev<cr>
+  tnoremap ,q <cmd>FloatermHide<cr>
+  tnoremap ,<space> <cmd>FloatermToggle<cr>
+  nnoremap <leader>, <cmd>FloatermToggle<cr>
 " TODO: Also checkout LazyDocker
   " Use key mapping <A-]> to send the <esc> key to the terminal
-	nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
+  nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
   " This way Esc key can be send to underlying program in termeinal
+  " On ISO-Layout press <alt-left>+<altGr>+]
+  "access "]" key
   tnoremap <A-]> <Esc>
   " Close floaterm with <esc> in normal mode 
   au! FileType floaterm nnoremap <buffer> <Esc> <C-\><C-n>:q<cr>
@@ -616,7 +625,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
-  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-lightbulb']
+  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-python', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-lightbulb', 'coc-go', 'coc-golines']
 
 
   " COC SNIPPETS CONFIG:
@@ -707,7 +716,6 @@ call plug#end()
   augroup end
 
 	nnoremap <Leader>calc <Plug>(coc-calc-result-append)
-		\ "find . -path '*/\.*' -prune -o -print \| sed '1d;s:^..::'",
 
 	" Use `[g` and `]g` to navigate diagnostics
 	noremap <silent> [g <Plug>(coc-diagnostic-prev)
@@ -875,7 +883,6 @@ call plug#end()
                 \ 'row': (ui.height/2) - (height/2),
                 \ 'anchor': 'NW',
                 \ 'border': 'single',
-                \ 'style': 'minimal',
                 \ }
     let win = nvim_open_win(buf, 1, opts)
   endfunction
