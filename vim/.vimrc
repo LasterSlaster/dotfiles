@@ -28,6 +28,7 @@
 " ---------------------------------------------------------------------------
 " NOTES:
 " ---------------------------------------------------------------------------
+"  - Sometimes relativenumbers are not enabled when opening a file e.g. '.vimrc'
 "  - Replace search tool for / and ? to make it work with fuzzy search
 "  - Improve setup to emulate important obsidian features, find tags and
 "  navigate links
