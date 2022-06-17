@@ -9,7 +9,7 @@ case $- in
 esac
 
 # Activate vi editor mode for bash
-set -o vi
+#set -o vi
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -129,10 +129,17 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+# Required to use nvim with sudoedit command for sudo nvim usage
+export EDITOR="nvim"
+
+export PATH="$HOME/.local/bin:$PATH"
+
 export FZF_COMPLETION_TRIGGER="**"
+export FZF_DEFAULT_COMMAND="ag --depth=50 --hidden --ignore=.git --ignore=.idea -g ''"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 _fzf_compgen_path() {
-  fd --hidden --follow --exclude ".git" . "$1"
+  ag --hidden --ignore=.git --ignore=.idea -g ''
 }
 
 # Use fd to generate the list for directory completion
