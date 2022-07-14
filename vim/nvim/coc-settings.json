@@ -5,6 +5,7 @@
 	"suggest.enablePreview": true,
 	"suggest.enablePreselect": false,
 	"suggest.noselect": true,
+  "explorer.quitOnOpen": true,
   "explorer.file.showHiddenFiles": true,
   "explorer.position": "left",
   "ltex.language": "de-DE",
