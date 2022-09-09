@@ -4,6 +4,8 @@ alias weather='curl wttr.in'
 # update ubuntu box
 alias update='sudo -- sh -c "apt update && apt upgrade && apt autoremove && apt autoclean"'
 
+alias clean='sudo apt autoclean && sudo apt autoremove && sudo apt autopurge'
+
 # install packages
 alias install='sudo -- sh -c "apt install"'
 
