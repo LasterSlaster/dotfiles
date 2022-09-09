@@ -625,7 +625,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
-  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-pyright', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-lightbulb', 'coc-go', 'coc-golines']
+  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-pyright', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-go', 'coc-golines']
 
 
   " COC SNIPPETS CONFIG:
@@ -686,6 +686,7 @@ call plug#end()
 
   " Use coc-explorer instead of netrw as default fileexplorer 
   function! s:DisableFileExplorer()
+      cd %:p:h
       au! FileExplorer
   endfunction
 
@@ -699,8 +700,7 @@ call plug#end()
   augroup CocExplorerDefault
       autocmd!
       autocmd VimEnter * call <SID>DisableFileExplorer()
-      autocmd BufEnter * if &ft != "coc-list" && &ft != "coc-explorer" | call <SID>OpenDirHere(expand('<amatch>'))
-      autocmd VimEnter * cd %:p:h 
+      autocmd BufWinEnter * if &ft != "coc-list" && &ft != "coc-explorer" | call <SID>OpenDirHere(expand('<amatch>'))
   augroup end
 
   function! s:ChangeDir()
