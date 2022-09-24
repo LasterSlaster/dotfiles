@@ -195,6 +195,7 @@ call plug#begin('~/.vim/plugged')
   Plug 'SirVer/ultisnips' "Code snippets. Compare with cheat.sh-vim. Also used in fzf and coc
   Plug 'honza/vim-snippets' "Provides snippets for ultisnips
 	if has('nvim')
+    Plug 'Pocco81/HighStr.nvim'
 		Plug 'neoclide/coc.nvim', {'branch': 'release'} "An alternative/addition to YouCompleteMe + a lot
     "For more coc extensions checkout https://github.com/neoclide/coc.nvim/wiki/Using-coc-extensions
     " For coc-metals(scala) installation see https://scalameta.org/metals/docs/editors/vim.html ':CocInstall coc-metals', coc-java, coc-html, coc-tsserver, coc-python, coc-snippets(coc-ultisnips, coc-neosnippet), coc-angular, coc-css, coc-markdownlint, coc-sql, coc-tabnine, coc-xml, coc-yaml, coc-calc, coc-diagnostic, coc-eslint/rome/prettier, coc-highlight, coc-sh, coc-pairs, coc-explorer, coc-flutter, coc-rome(instead/addition to coc-tsserver?), coc-spell-checker, coc-json
@@ -343,9 +344,9 @@ call plug#end()
 	" - Use ^] to jump to tag under cursor
 	" - Use g^] for ambiguous tags
 	" - Use ^t to jump back up the tag stack
-	command! MakeTags !ctags -R .
+    command! MakeTags !ctags -R .
 
-	command! Reloadvimrc source ~/.vimrc
+    command! Reloadvimrc source ~/.vimrc
 
 	" AUTOCOMPLETE:
 	" The good stuff is documented in |ins-completion|
@@ -355,22 +356,22 @@ call plug#end()
 	" - ^n for anything specified by the 'complete' option
 	" - Use ^n and ^p to go back and forth in the suggestion list
 
-	" FILE BROWSING:
-	if executable('rg')
-		let g:rg_derive_root='true'
-		let g:rg_highlight='true'
-		set grepprg=rg\ --color=never
-	endif
+  " FILE BROWSING:
+    if executable('rg')
+      let g:rg_derive_root='true'
+      let g:rg_highlight='true'
+      set grepprg=rg\ --color=never
+    endif
 
-	" REMAPPINGS:
-	" Allow saving of files as sudo when I forgot to start vim using sudo.
-	cnoremap w!! w !sudo tee > /dev/null %
-	" Remap Esc to jk
-	inoremap jk <ESC>
-	" Remap switching between windows
-	nnoremap <leader>h :wincmd h<CR>
-	nnoremap <leader>j :wincmd j<CR>
-	nnoremap <leader>k :wincmd k<CR>
+  " REMAPPINGS:
+    " Allow saving of files as sudo when I forgot to start vim using sudo.
+    cnoremap w!! w !sudo tee > /dev/null %
+    " Remap Esc to jk
+    inoremap jk <ESC>
+    " Remap switching between windows
+    nnoremap <leader>h :wincmd h<CR>
+    nnoremap <leader>j :wincmd j<CR>
+    nnoremap <leader>k :wincmd k<CR>
     nnoremap <leader>l :wincmd l<CR>
     " Open a new buffer with vertical split
     nnoremap <leader>n :vnew<CR>
@@ -416,6 +417,12 @@ call plug#end()
     
   " ---------------------------------------------------------------------------
 
+  " ---------------------------------------------------------------------------
+  " PLUGIN HIGHSTR CONFIG:
+  " ---------------------------------------------------------------------------
+    vnoremap <leader>h :<c-u>HSHighlight<CR>
+    vnoremap <leader>H :<c-u>HSRmHighlight<CR>
+  " ---------------------------------------------------------------------------
 
   " ---------------------------------------------------------------------------
   " PLUGIN COLORSCHEME CONFIG:
