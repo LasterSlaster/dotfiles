@@ -1,11 +1,11 @@
 {
 	"metals.statusBarEnabled": true,
 	"metals.superMethodLensesEnabled": true,
+  "ltex.enabled": false,
 	"codeLens.enable": true,
 	"suggest.enablePreview": true,
 	"suggest.enablePreselect": false,
 	"suggest.noselect": true,
-  "explorer.quitOnOpen": true,
   "explorer.file.showHiddenFiles": true,
   "explorer.position": "left",
   "explorer.quitOnOpen": true,
