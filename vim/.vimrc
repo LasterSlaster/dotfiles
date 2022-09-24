@@ -428,11 +428,11 @@ call plug#end()
   " PLUGIN COLORSCHEME CONFIG:
   " ---------------------------------------------------------------------------
     " If gruvbox plugin is install, sets gruvbox theme
-    " let g:gruvbox_guisp_fallback = "bg"
-    " colorscheme gruvbox
+    let g:gruvbox_guisp_fallback = "bg"
+    colorscheme gruvbox
     set background=dark
-    let g:tokyonight_style = "storm"
-    colorscheme tokyonight
+    " let g:tokyonight_style = "storm"
+    " colorscheme tokyonight
     " Make backgound transparent
     " hi Normal guibg=NONE ctermbg=NONE
   " ---------------------------------------------------------------------------
@@ -632,8 +632,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
-  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-pyright', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-ltex', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-go', 'coc-golines']
-
+  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-pyright', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-go', 'coc-golines']
 
   " COC SNIPPETS CONFIG:
     " use <c-l> for trigger snippet expand.
