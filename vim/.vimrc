@@ -564,7 +564,7 @@ call plug#end()
 	nnoremap <leader>gs :G<CR>
   nnoremap <leader>gb :GBranches<CR>
   nnoremap <leader>/ :BLines<cr>
-	nnoremap <leader>B :Buffer<CR>
+	nnoremap <leader>b :Buffer<CR>
 	nnoremap <leader>H :History<CR>
 	inoremap <expr> <c-x><c-f> fzf#vim#complete#path(
 		\ fzf#wrap({'dir': expand('%:p:h')}))
