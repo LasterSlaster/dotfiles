@@ -181,6 +181,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 	" Section of plugins to install 
+  "TODO: highlightedyank does not work anymore
 	Plug 'machakann/vim-highlightedyank' "highlights the yanked section for a second
 	Plug 'tommcdo/vim-exchange' "Exchange/replace two regions of text with each other. Binding is cx plus movement(cxx=line)
 	Plug 'tpope/vim-commentary' "Comment multiple lines. Binding is gc (gcc=line, gcap=paragraph,:g/todo/Commentary=all lines with todo in it,gcgc=uncomment)
@@ -417,12 +418,14 @@ call plug#end()
     
   " ---------------------------------------------------------------------------
 
+
   " ---------------------------------------------------------------------------
   " PLUGIN HIGHSTR CONFIG:
   " ---------------------------------------------------------------------------
     vnoremap <leader>h :<c-u>HSHighlight<CR>
     vnoremap <leader>H :<c-u>HSRmHighlight<CR>
   " ---------------------------------------------------------------------------
+
 
   " ---------------------------------------------------------------------------
   " PLUGIN COLORSCHEME CONFIG:
@@ -435,21 +438,6 @@ call plug#end()
     " colorscheme tokyonight
     " Make backgound transparent
     " hi Normal guibg=NONE ctermbg=NONE
-  " ---------------------------------------------------------------------------
-
-
-  " ---------------------------------------------------------------------------
-  " PLUGIN VIMTEX CONFIG:
-  " ---------------------------------------------------------------------------
-    " let g:vimtex_view_method = 'zathura'
-
-    " Or with a generic interface:
-    let g:vimtex_view_general_viewer = 'okular'
-    let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
-
-    " Most VimTeX mappings rely on localleader and this can be changed with the
-    " following line. The default is usually fine and is the symbol "\".
-    let maplocalleader = ","
   " ---------------------------------------------------------------------------
 
 
@@ -632,7 +620,7 @@ call plug#end()
 " ---------------------------------------------------------------------------
 " PLUGIN COC CONFIG:
 " ---------------------------------------------------------------------------
-  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-pyright', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-texlab', 'coc-vimtex', 'coc-go', 'coc-golines']
+  let g:coc_global_extensions = ['coc-highlight', 'coc-yank', 'coc-lists', 'coc-vimlsp', 'coc-json', 'coc-metals', 'coc-java', 'coc-html', 'coc-htmlhint', 'coc-cssmodules', 'coc-html-css-support', 'coc-tsserver', 'coc-pyright', 'coc-snippets', 'coc-angular', 'coc-css', 'coc-markdownlint', 'coc-webview', 'coc-markdown-preview-enhanced', 'coc-sql', 'coc-xml', 'coc-yaml', 'coc-calc', 'coc-diagnostic', 'coc-eslint', 'coc-highlight', 'coc-sh', 'coc-pairs', 'coc-explorer', 'coc-flutter', 'coc-go', 'coc-golines']
 
   " COC SNIPPETS CONFIG:
     " use <c-l> for trigger snippet expand.
@@ -660,28 +648,28 @@ call plug#end()
     " inorwmap <silent><expr> <TAB>
     "       \ pumvisible() ? coc#_select_confirm() :
 
-    if exists('*complete_info')
-      inoremap <silent><expr> <cr> complete_info(['selected'])['selected'] != -1 ? "\<C-y>" : "\<C-g>u\<CR>"
-    endif
+    " Make <CR> to accept selected completion item or notify coc.nvim to format
+    " <C-g>u breaks current undo, please make your own choice.
+    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+          \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-    function! s:check_back_space() abort
+    function! CheckBackspace() abort
       let col = col('.') - 1
       return !col || getline('.')[col - 1]  =~# '\s'
     endfunction
 
-    "
     " Use tab for trigger completion with characters ahead and navigate.
     " Use command ':verbose imap <tab>' to make sure tab is not mapped by another plugin.
     inoremap <silent><expr> <TAB>
-    		 \ pumvisible() ? "\<C-n>" :
-          \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-          \ <SID>check_back_space() ? "\<TAB>" :
+         \ coc#pum#visible() ? coc#pum#next(1) :
+         \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+          \ CheckBackspace() ? "\<TAB>" :
           \ coc#refresh()
-    inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<c-h>"
+    inoremap <expr><S-TAB> coc#pum#visible() ? coc#pum#prev(1) : "\<c-h>"
 
     " Use <c-space> to trigger completion.
     if has('nvim')
-      inoremap <silent><expr> <c-space> pumvisible() ? "\<c-e>" : coc#refresh()
+      inoremap <silent><expr> <c-space> coc#pum#visible() ? coc#pum#cancel() : coc#refresh()
     else
       inoremap <silent><expr> <c-@> coc#refresh()
     endif
@@ -740,7 +728,7 @@ call plug#end()
 	function! s:show_documentation()
 		if (index(['vim','help'], &filetype) >= 0)
 			execute 'h '.expand('<cword>')
-		elseif (coc#rpc#ready())
+		elseif (CocAction('hasProvider', 'hover'))
 			call CocActionAsync('doHover')
 		else
 			execute '!' . &keywordprg . " " . expand('<cword>')
@@ -805,12 +793,12 @@ call plug#end()
 	noremap <leader>af  <Plug>(coc-fix-current)
 	" Trigger for code actions
 	" Make sure `"codeLens.enable": true` is set in your coc config
-	nnoremap <leader>cl :<C-u>call CocActionAsync('codeLensAction')<CR>
+	noremap <leader>cl  <Plug>(coc-codelens-action)
 
 	augroup mygroup
 		autocmd!
 		" Setup formatexpr specified filetype(s).
-		autocmd FileType scala setl formatexpr=CocAction('formatSelected')
+		autocmd FileType scala,python,json setl formatexpr=CocAction('formatSelected')
 		" Update signature help on jump placeholder
 		autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
     " Highlight symbol under cursor on CursorHold
@@ -820,7 +808,7 @@ call plug#end()
 	augroup end
 
 	" Use `:Format` to format current buffer
-	command! -nargs=0 Format :call CocAction('format')
+	command! -nargs=0 Format :call CocActionAsync('format')
 
 	" Use `:Fold` to fold current buffer
 	command! -nargs=? Fold :call     CocAction('fold', <f-args>)
@@ -1149,6 +1137,19 @@ call plug#end()
 "	nnoremap <Leader>gr :YcmCompleter RefactorRename<SPACE>
 " ---------------------------------------------------------------------------
 "
+" ---------------------------------------------------------------------------
+" PLUGIN VIMTEX CONFIG:
+" ---------------------------------------------------------------------------
+  " let g:vimtex_view_method = 'zathura'
+
+  " Or with a generic interface:
+  " let g:vimtex_view_general_viewer = 'okular'
+  " let g:vimtex_view_general_options = '--unique file:@pdf\#src:@line@tex'
+
+  " Most VimTeX mappings rely on localleader and this can be changed with the
+  " following line. The default is usually fine and is the symbol "\".
+  " let maplocalleader = ","
+" ---------------------------------------------------------------------------
 "
 " ---------------------------------------------------------------------------
 "	" Move a line/block up or down
