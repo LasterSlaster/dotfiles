@@ -1,7 +1,6 @@
 {
 	"metals.statusBarEnabled": true,
 	"metals.superMethodLensesEnabled": true,
-  "ltex.enabled": false,
 	"codeLens.enable": true,
 	"suggest.enablePreview": true,
 	"suggest.enablePreselect": false,
@@ -9,7 +8,6 @@
   "explorer.file.showHiddenFiles": true,
   "explorer.position": "left",
   "explorer.quitOnOpen": true,
-  "ltex.language": "de-DE",
   "texlab.build.onSave": true,
   "texlab.build.forwardSearchAfter": true,
   "texlab.build.args": [ "-pdf", "-interaction=nonstopmode", "-synctex=1", "-pvc"], 
