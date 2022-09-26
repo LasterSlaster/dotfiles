@@ -2,21 +2,9 @@
 	"metals.statusBarEnabled": true,
 	"metals.superMethodLensesEnabled": true,
 	"codeLens.enable": true,
-	"suggest.enablePreview": true,
 	"suggest.enablePreselect": false,
 	"suggest.noselect": true,
   "explorer.file.showHiddenFiles": true,
   "explorer.position": "left",
-  "explorer.quitOnOpen": true,
-  "texlab.build.onSave": true,
-  "texlab.build.forwardSearchAfter": true,
-  "texlab.build.args": [ "-pdf", "-interaction=nonstopmode", "-synctex=1", "-pvc"], 
-  "texlab.forwardSearch.executable": "okular", 
-  "texlab.forwardSearch.args": [
-    "--unique", "file:%p#src:%l%f"
-  ],
-  "coc.source.vimtex.filetypes": [
-    "tex",
-    "plaintex"
-  ]
+  "explorer.quitOnOpen": true
 }
