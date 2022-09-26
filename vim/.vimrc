@@ -588,8 +588,8 @@ call plug#end()
   tnoremap ,<space> <cmd>FloatermToggle<cr>
   nnoremap <leader>, <cmd>FloatermToggle<cr>
 " TODO: Also checkout LazyDocker
-  " Use key mapping <A-]> to send the <esc> key to the terminal
   nnoremap <silent> <leader>gg :FloatermNew lazygit<cr>
+  " Use key mapping <A-]> to send the <esc> key to the terminal
   " This way Esc key can be send to underlying program in termeinal
   " On ISO-Layout press <alt-left>+<altGr>+]
   "access "]" key
@@ -650,7 +650,7 @@ call plug#end()
 
     " Make <CR> to accept selected completion item or notify coc.nvim to format
     " <C-g>u breaks current undo, please make your own choice.
-    inoremap <silent><expr> <CR> coc#pum#visible() ? coc#pum#confirm()
+    inoremap <silent><expr> <CR> coc#pum#visible() && coc#pum#info()['index'] != -1 ? coc#pum#confirm()
           \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
     function! CheckBackspace() abort
@@ -670,6 +670,7 @@ call plug#end()
     " Use <c-space> to trigger completion.
     if has('nvim')
       inoremap <silent><expr> <c-space> coc#pum#visible() ? coc#pum#cancel() : coc#refresh()
+      inoremap <silent><expr> <esc> coc#pum#visible() ? coc#pum#cancel() : "\<esc>"
     else
       inoremap <silent><expr> <c-@> coc#refresh()
     endif
