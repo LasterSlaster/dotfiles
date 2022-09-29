@@ -219,9 +219,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
   Plug 'sindrets/winshift.nvim'
 
-  " Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
-  " " Plug 'ryanoasis/vim-devicons' Icons without colours
-  " Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+  "Plug 'sindrets/diffview.nvim' "Git diff/rev viewer
+  "Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
+  "Plug 'ryanoasis/vim-devicons' Icons without colours
+  "Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
   "Plug 'wellle/context.vim' "An alternative to nvim-treesitter-context
   "Plug 'ryanoasis/vim-devicons' "Icons for explorer. Nerdfont. set encoding=utf-8
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
