@@ -431,13 +431,13 @@ call plug#end()
   " PLUGIN COLORSCHEME CONFIG:
   " ---------------------------------------------------------------------------
     " If gruvbox plugin is install, sets gruvbox theme
-    let g:gruvbox_guisp_fallback = "bg"
-    colorscheme gruvbox
-    set background=dark
-    " let g:tokyonight_style = "storm"
-    " colorscheme tokyonight
+    " let g:gruvbox_guisp_fallback = "bg"
+    " colorscheme gruvbox
+    " set background=dark
+    let g:tokyonight_style = "storm"
+    colorscheme tokyonight
     " Make backgound transparent
-    " hi Normal guibg=NONE ctermbg=NONE
+    hi Normal guibg=NONE ctermbg=NONE
   " ---------------------------------------------------------------------------
 
 
