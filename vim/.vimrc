@@ -406,6 +406,10 @@ call plug#end()
     "TODO: switch to location of current buffer, not file
     nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
 
+    " cycle between buffers in the style of <c-o> and <c-i>
+    nnoremap <a-o> :bn<CR>
+    nnoremap <a-i> :bp<CR>
+
     
     " FUNCTIONS:
     " Format innerword at current cursor location to first letter uppercase and
