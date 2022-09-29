@@ -442,7 +442,7 @@ call plug#end()
     let g:tokyonight_style = "storm"
     colorscheme tokyonight
     " Make backgound transparent
-    hi Normal guibg=NONE ctermbg=NONE
+    " hi Normal guibg=NONE ctermbg=NONE
   " ---------------------------------------------------------------------------
 
 
