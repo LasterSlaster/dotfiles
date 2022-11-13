@@ -437,7 +437,7 @@ call plug#end()
     let g:tokyonight_style = "storm"
     colorscheme tokyonight
     " Make backgound transparent
-    hi Normal guibg=NONE ctermbg=NONE
+    "hi Normal guibg=NONE ctermbg=NONE
   " ---------------------------------------------------------------------------
 
 
@@ -670,7 +670,7 @@ call plug#end()
     " Use <c-space> to trigger completion.
     if has('nvim')
       inoremap <silent><expr> <c-space> coc#pum#visible() ? coc#pum#cancel() : coc#refresh()
-      inoremap <silent><expr> <esc> coc#pum#visible() ? coc#pum#cancel() : "\<esc>"
+      "inoremap <silent><expr> <esc> coc#pum#visible() ? coc#pum#cancel() : "\<esc>"
     else
       inoremap <silent><expr> <c-@> coc#refresh()
     endif
