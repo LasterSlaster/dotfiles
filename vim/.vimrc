@@ -377,6 +377,7 @@ call plug#end()
     nnoremap <leader>l :wincmd l<CR>
     " Open a new buffer with vertical split
     nnoremap <leader>n :vnew<CR>
+    nnoremap <leader>N :enew<CR>
     " fast quit
     nnoremap <leader>q :q<CR>
     " fast write
