@@ -219,9 +219,10 @@ call plug#begin('~/.vim/plugged')
   Plug 'https://gitlab.com/yorickpeterse/nvim-window.git'
   Plug 'sindrets/winshift.nvim'
 
-  " Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
-  " " Plug 'ryanoasis/vim-devicons' Icons without colours
-  " Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
+  "Plug 'sindrets/diffview.nvim' "Git diff/rev viewer
+  "Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
+  "Plug 'ryanoasis/vim-devicons' Icons without colours
+  "Plug 'akinsho/bufferline.nvim', { 'tag': '*' }
   "Plug 'wellle/context.vim' "An alternative to nvim-treesitter-context
   "Plug 'ryanoasis/vim-devicons' "Icons for explorer. Nerdfont. set encoding=utf-8
 	"Plug 'easymotion/vim-easymotion' Alternative to vim-sneak
@@ -376,6 +377,7 @@ call plug#end()
     nnoremap <leader>l :wincmd l<CR>
     " Open a new buffer with vertical split
     nnoremap <leader>n :vnew<CR>
+    nnoremap <leader>N :enew<CR>
     " fast quit
     nnoremap <leader>q :q<CR>
     " fast write
@@ -404,6 +406,10 @@ call plug#end()
     "Switch working directory to location of current file
     "TODO: switch to location of current buffer, not file
     nnoremap <leader>cd :cd %:p:h<CR>:pwd<CR>
+
+    " cycle between buffers in the style of <c-o> and <c-i>
+    nnoremap <a-o> :bn<CR>
+    nnoremap <a-i> :bp<CR>
 
     
     " FUNCTIONS:
