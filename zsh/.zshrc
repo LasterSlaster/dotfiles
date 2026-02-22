@@ -1,8 +1,12 @@
 # Fast mode for non-interactive shells (AI/LLM background commands)
 # This speeds up Cursor AI's shell commands while keeping your integrated terminal normal
-if [[ ! -o interactive ]]; then
-    # Non-interactive shell = background command, not user's terminal
-    export PATH="/usr/local/bin:$PATH"
+if [[ ! -o interactive ]] || [[ ! -t 0 ]]; then
+    # No TTY attached = background AI command, not user's terminal
+    if [[ "$(uname)" == "Darwin" ]]; then
+        export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+    else
+        export PATH="/home/linuxbrew/.linuxbrew/bin:/usr/local/bin:$PATH"
+    fi
     # Skip Oh My Zsh loading
     return 0 2>/dev/null || exit 0
 fi
@@ -162,8 +166,13 @@ alias cdc="cd ~/repos"
 alias docs="cd ~/Documents"
 alias dl="cd ~/Downloads"
 alias zconf="nvim ~/.zshrc"
-alias cconf="nvim ~/Library/Application Support/Code/User/settings.json"
-alias update="brew update && brew upgrade && brew cleanup"
+if [[ "$(uname)" == "Darwin" ]]; then
+  alias cconf="nvim ~/Library/Application\ Support/Code/User/settings.json"
+  alias update="brew update && brew upgrade && brew cleanup"
+else
+  alias cconf="nvim ~/.config/Code/User/settings.json"
+  alias update="sudo apt update && sudo apt upgrade"
+fi
 alias cpu="htop --sort-key PERCENT_CPU"
 alias mkdir="mkdir -p"   # Create nested directories
 
@@ -252,9 +261,11 @@ psgrep() {
 }
 
 command -v fastfetch &>/dev/null && fastfetch
-export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
-export PATH="$PATH:$HOME/.pub-cache/bin"
-export PATH="$HOME/fvm/default/bin:$PATH"
+if [[ "$(uname)" == "Darwin" ]]; then
+  export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
+  export PATH="$PATH:$HOME/.pub-cache/bin"
+  export PATH="$HOME/fvm/default/bin:$PATH"
+fi
 
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
@@ -263,8 +274,11 @@ export SDKMAN_DIR="$HOME/.sdkman"
 # Ignore dotfiles (like .run) from spelling correction
 CORRECT_IGNORE_FILE='.*'
 export KUBECONFIG=~/.kube/config_dev
-alias swilog-dev="cd /Users/mariusdegen/repos/swila && ./scripts/start.sh dev"
-alias swilog-stop="cd /Users/mariusdegen/repos/swila && docker-compose -f docker-compose.dev.yml down"
+export PATH="$HOME/.local/bin:$PATH"
+if [[ "$(uname)" == "Darwin" ]]; then
+  alias swilog-dev="cd $HOME/repos/swila && ./scripts/start.sh dev"
+  alias swilog-stop="cd $HOME/repos/swila && docker-compose -f docker-compose.dev.yml down"
+fi
 
 
 # nvm (Node Version Manager)
@@ -273,8 +287,10 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
 
 # Load Angular CLI autocompletion.
-[[ -x "$(command -v ng)" ]] && source <(ng completion script)
+command -v ng &>/dev/null && source <(ng completion script)
 alias flutterfire="dart run flutterfire_cli:flutterfire"
 
 
-export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
+if [[ "$(uname)" == "Darwin" ]]; then
+  export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
+fi
