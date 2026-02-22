@@ -1,0 +1,85 @@
+format = "$time $all" # Places time at the beginning of the prompt
+right_format = ""     # No content on the right side of the prompt
+add_newline = true    # Adds a newline before each prompt
+
+# Add time to the prompt
+[time]
+format = '[\[$time\]]($style) '
+disabled = false   # Ensure the time module is enabled
+
+# Configure the username module
+[username]
+show_always = false   # Show username only when necessary (e.g., SSH)
+style_user = "yellow bold" # Customize username appearance
+
+# Configure the hostname module
+[hostname]
+ssh_only = true       # Show hostname only when connected via SSH
+style = "bold dimmed blue" # Customize hostname appearance
+
+# Directory module
+[directory]
+truncation_length = 3       # Show only the last 3 segments of the path
+truncation_symbol = "…/"    # Symbol for truncated directories
+style = "bold cyan"         # Customize directory appearance
+
+# Git status module
+[git_status]
+conflicted = "🏳️‍⚧️ "      # Symbol for merge conflicts
+ahead = "⇡${count}"         # Show commits ahead
+behind = "⇣${count}"        # Show commits behind
+diverged = "⇕⇡${ahead_count}⇣${behind_count}" # Show diverged commits
+style = "bold red"          # Customize git status appearance
+
+# Git branch module
+[git_branch]
+symbol = "🌱 "              # Symbol for branch
+style = "bold green"        # Customize git branch appearance
+
+[git_commit]
+commit_hash_length = 4
+tag_symbol = '🔖 '
+
+# Node.js version
+[nodejs]
+symbol = "⬢ "              # Symbol for Node.js
+style = "bold green"        # Customize Node.js version
+
+# Python version
+[python]
+symbol = "🐍 "              # Symbol for Python
+style = "bold blue"         # Customize Python version
+pyenv_version_name = true   # Show version from pyenv
+
+# Shell module
+[shell]
+disabled = false            # Ensure the shell module is enabled
+style = "bold purple"       # Customize shell appearance
+
+# Command duration
+[cmd_duration]
+min_time = 2000             # Show command duration only if it exceeds 2 seconds
+format = "⏱️ ${duration}"    # Customize display format
+style = "bold yellow"
+
+# Package module
+[package]
+disabled = false            # Enable package version module
+style = "bold white"
+
+# Battery module
+[battery]
+full_symbol = "🔋"          # Symbol when battery is full
+charging_symbol = "⚡"      # Symbol when charging
+discharging_symbol = "🔌"   # Symbol when discharging
+
+# Custom separator for prompt modules
+[character]
+success_symbol = '[➜](bold green) '
+error_symbol = '[❌](bold red) '
+
+# Docker context module
+[docker_context]
+symbol = "🐳 "              # Symbol for Docker context
+style = "bold blue"
+disabled = false            # Ensure Docker context module is enabled
