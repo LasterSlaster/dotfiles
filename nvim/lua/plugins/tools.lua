@@ -278,4 +278,19 @@ return {
   },
 
   -- ap/vim-css-color → replaced by mini.hipatterns hex_color highlighter
+
+  -- --------------------------------------------------------------------------
+  -- vim-suda — read / write files with sudo without restarting Neovim
+  -- :SudaRead  [path]   open a root-owned file into current buffer
+  -- :SudaWrite [path]   save current buffer with sudo
+  -- <leader>W           quick :SudaWrite shortcut
+  -- --------------------------------------------------------------------------
+  {
+    "lambdalisue/vim-suda",
+    cond = not_vscode,
+    cmd  = { "SudaRead", "SudaWrite" },
+    keys = {
+      { "<leader>W", "<cmd>SudaWrite<CR>", desc = "Write with sudo" },
+    },
+  },
 }
