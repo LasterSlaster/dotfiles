@@ -19,8 +19,8 @@ HISTCONTROL=ignoreboth
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+HISTSIZE=5000
+HISTFILESIZE=10000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -90,10 +90,16 @@ fi
 # colored GCC warnings and errors
 #export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
+# Better ls with eza if available, fallback to standard ls
+if command -v eza &>/dev/null; then
+    alias ls="eza --icons=always --color=always --long --git"
+    alias ll="eza --icons=always --color=always --long --all --git"
+    alias lt="eza --icons=always --color=always --long --git --tree"
+else
+    alias ll='ls -alF'
+    alias la='ls -A'
+    alias l='ls -CF'
+fi
 
 # Add an "alert" alias for long running commands.  Use like so:
 #   sleep 10; alert
@@ -123,7 +129,7 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PATH="/usr/local/bin/postman/:/usr/local/bin/android-studio/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:/usr/local/bin/aws_completer:/home/laster/nvim-linux64/bin:/usr/local/go/bin:$PATH"
+export PATH="/usr/local/bin/postman/:/usr/local/bin/android-studio/bin:$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:/usr/local/bin/aws_completer:/usr/local/go/bin:$PATH"
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
@@ -146,5 +152,78 @@ _fzf_compgen_path() {
 _fzf_compgen_dir() {
   fd --type d --hidden --follow --exclude ".git" . "$1"
 }
+
+# Better cat with bat if available
+command -v bat &>/dev/null && alias cat="bat"
+
+# Editor
+alias vim="nvim"
+
+# Directory navigation
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias cdc="cd ~/repos"
+alias docs="cd ~/Documents"
+alias dl="cd ~/Downloads"
+alias bconf="nvim ~/.bashrc"
+
+# Git aliases
+alias gs="git status"
+alias gd="git diff"
+alias ga="git add"
+alias gP="git push"
+alias gp="git pull"
+alias gcm="git commit -m"
+alias gcma="git add -A && git commit -m"
+alias gl="git log --oneline --graph --decorate --all"
+alias gud="git reset --soft HEAD~1"   # Undo last commit
+alias gcb="git checkout -b"           # Create and switch to a new branch
+
+# Misc
+alias cpu="htop --sort-key PERCENT_CPU"
+alias mkdir="mkdir -p"
+
+# Extract archives
+extract() {
+    if [ -f "$1" ]; then
+        case "$1" in
+            *.tar.bz2) tar xjf "$1" ;;
+            *.tar.gz)  tar xzf "$1" ;;
+            *.bz2)     bunzip2 "$1" ;;
+            *.rar)     unrar x "$1" ;;
+            *.gz)      gunzip "$1" ;;
+            *.tar)     tar xf "$1" ;;
+            *.tbz2)    tar xjf "$1" ;;
+            *.tgz)     tar xzf "$1" ;;
+            *.zip)     unzip "$1" ;;
+            *.Z)       uncompress "$1" ;;
+            *.7z)      7z x "$1" ;;
+            *)         echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
+# Search running processes
+psgrep() {
+    ps aux | grep -i "$1" | grep -v grep
+}
+
+# fdd - cd to selected directory using fzf
+fdd() {
+    local dir
+    dir=$(find ${1:-.} -path '*/.*' -prune -o -type d -print 2>/dev/null | fzf +m) &&
+    cd "$dir"
+}
+
+# fh - search command history and execute selected command
+fh() {
+    eval $(history | fzf +s --tac | sed 's/ *[0-9]* *//')
+}
+
+# Zoxide (smarter cd)
+command -v zoxide &>/dev/null && eval "$(zoxide init bash)"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash

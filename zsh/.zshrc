@@ -7,6 +7,9 @@ if [[ ! -o interactive ]] || [[ ! -t 0 ]]; then
     return 0 2>/dev/null || exit 0
 fi
 
+# lesspipe for better less with non-text input files (no-op on macOS where lesspipe isn't present)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 
@@ -193,6 +196,19 @@ zstyle ':fzf-tab:complete:eza:*' fzf-preview 'eza --icons=always --color=always 
 # switch group using `<` and `>`
 zstyle ':fzf-tab:*' switch-group '<' '>'
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
+# FZF configuration
+export FZF_COMPLETION_TRIGGER="**"
+export FZF_DEFAULT_COMMAND="ag --depth=50 --hidden --ignore=.git --ignore=.idea -g ''"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+_fzf_compgen_path() {
+    ag --hidden --ignore=.git --ignore=.idea -g '' "${1:-.}"
+}
+
+_fzf_compgen_dir() {
+    fd --type d --hidden --follow --exclude ".git" . "${1:-.}"
+}
 
 eval "$(fzf --zsh)"
 
