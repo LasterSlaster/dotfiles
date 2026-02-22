@@ -235,7 +235,10 @@ _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" . "${1:-.}"
 }
 
-command -v fzf &>/dev/null && eval "$(fzf --zsh)"
+if command -v fzf &>/dev/null; then
+  _fzf_init="$(fzf --zsh 2>/dev/null)" && eval "$_fzf_init" || { [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh; }
+  unset _fzf_init
+fi
 
 extract() {
   if [ -f "$1" ]; then
@@ -289,7 +292,7 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
 
 # Load Angular CLI autocompletion.
-command -v ng &>/dev/null && source <(ng completion script)
+command -v ng &>/dev/null && source <(ng completion script 2>/dev/null)
 alias flutterfire="dart run flutterfire_cli:flutterfire"
 
 
