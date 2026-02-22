@@ -159,6 +159,8 @@ if command -v eza &>/dev/null; then
 fi
 command -v bat  &>/dev/null && alias cat="bat"
 command -v nvim &>/dev/null && alias vim="nvim"
+# sudo nvim: run nvim as root but with your user's config
+snvim() { sudo HOME="$HOME" XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}" "$(which nvim)" "$@"; }
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -294,3 +296,7 @@ alias flutterfire="dart run flutterfire_cli:flutterfire"
 if [[ "$(uname)" == "Darwin" ]]; then
   export STM32_PRG_PATH=/Applications/STMicroelectronics/STM32Cube/STM32CubeProgrammer/STM32CubeProgrammer.app/Contents/MacOs/bin
 fi
+
+# Fix bracketed paste mode (prevents ^[[200~...~ around pasted text)
+autoload -Uz bracketed-paste-magic
+zle -N bracketed-paste bracketed-paste-magic

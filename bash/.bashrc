@@ -158,6 +158,8 @@ command -v bat &>/dev/null && alias cat="bat"
 
 # Editor
 alias vim="nvim"
+# sudo nvim: run nvim as root but with your user's config
+snvim() { sudo HOME="$HOME" XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}" "$(which nvim)" "$@"; }
 
 # Directory navigation
 alias ..="cd .."
@@ -227,3 +229,6 @@ fh() {
 command -v zoxide &>/dev/null && eval "$(zoxide init bash)"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Fix bracketed paste mode (prevents ^[[200~...~ around pasted text)
+bind 'set enable-bracketed-paste off'
