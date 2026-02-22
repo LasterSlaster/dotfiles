@@ -1,11 +1,14 @@
 # Fast mode for non-interactive shells (AI/LLM background commands)
 # This speeds up Cursor AI's shell commands while keeping your integrated terminal normal
-if [[ ! -o interactive ]] || [[ ! -t 0 ]]; then
-    # No TTY attached = background AI command, not user's terminal
-    export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+if [[ ! -o interactive ]]; then
+    # Non-interactive shell = background command, not user's terminal
+    export PATH="/usr/local/bin:$PATH"
     # Skip Oh My Zsh loading
     return 0 2>/dev/null || exit 0
 fi
+
+# Ensure user-local bin is in PATH early (needed for starship, fzf, etc.)
+export PATH="$HOME/.local/bin:$PATH"
 
 # lesspipe for better less with non-text input files (no-op on macOS where lesspipe isn't present)
 [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
@@ -19,7 +22,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # Set name of the theme to load --- if set to "random", it will
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME=""  # Disabled: starship handles the prompt
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -74,17 +77,21 @@ COMPLETION_WAITING_DOTS="true"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-autoload -Uz compinit
-compinit
-
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
 # Custom plugins may be added to $ZSH_CUSTOM/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git fzf-tab zsh-autosuggestions zsh-syntax-highlighting fast-syntax-highlighting zsh-completions) # zsh-autocomplete
+# Build plugin list dynamically — only include plugins that are actually installed
+plugins=(git)
+_omz_custom="${ZSH_CUSTOM:-$ZSH/custom}"
+[[ -d "$_omz_custom/plugins/fzf-tab" ]]               && plugins+=(fzf-tab)
+[[ -d "$_omz_custom/plugins/zsh-autosuggestions" ]]   && plugins+=(zsh-autosuggestions)
+[[ -d "$_omz_custom/plugins/fast-syntax-highlighting" ]] && plugins+=(fast-syntax-highlighting)
+[[ -d "$_omz_custom/plugins/zsh-completions" ]]       && plugins+=(zsh-completions)
+unset _omz_custom
 
-source $ZSH/oh-my-zsh.sh
+[[ -f "$ZSH/oh-my-zsh.sh" ]] && source "$ZSH/oh-my-zsh.sh"
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -108,9 +115,9 @@ source $ZSH/oh-my-zsh.sh
 #
 # Example aliases
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-eval "$(starship init zsh)"
+command -v starship &>/dev/null && eval "$(starship init zsh)"
 
-source <(kubectl completion zsh)
+command -v kubectl &>/dev/null && source <(kubectl completion zsh)
 
 # Load fzf key bindings and completion if they exist
 if [[ -f ~/.fzf.zsh ]]; then
@@ -130,7 +137,7 @@ fh() {
 }
 
 # alias for cd
-eval "$(zoxide init --cmd z zsh)"
+command -v zoxide &>/dev/null && eval "$(zoxide init --cmd z zsh)"
 alias gs="git status"
 alias gd="git diff"
 alias ga="git add"
@@ -141,11 +148,13 @@ alias gcma="git add -A && git commit -m" # TODO: install and use commitizen!?
 alias gl="git log --oneline --graph --decorate --all"
 alias gud="git reset --soft HEAD~1"   # Undo last commit
 alias gcb="git checkout -b"   # Create and switch to a new branch
-alias ls="eza --icons=always --color=always --long --git"
-alias ll="eza --icons=always --color=always --long --all --git"
-alias lt="eza --icons=always --color=always --long --git --tree"
-alias cat="bat"
-alias vim="nvim"
+if command -v eza &>/dev/null; then
+  alias ls="eza --icons=always --color=always --long --git"
+  alias ll="eza --icons=always --color=always --long --all --git"
+  alias lt="eza --icons=always --color=always --long --git --tree"
+fi
+command -v bat  &>/dev/null && alias cat="bat"
+command -v nvim &>/dev/null && alias vim="nvim"
 alias ..="cd .."
 alias ...="cd ../.."
 alias ....="cd ../../.."
@@ -159,9 +168,12 @@ alias cpu="htop --sort-key PERCENT_CPU"
 alias mkdir="mkdir -p"   # Create nested directories
 
 cd() {
-  # Use zoxide to change directories
-  # Print directory contents using your preferred listing command
-  z "$@" &&  eza --icons=always --color=always --long --all --git   # Replace with `ls` or another command if preferred
+  if (( $+functions[z] )); then
+    z "$@"
+  else
+    builtin cd "$@"
+  fi
+  (( $+commands[eza] )) && eza --icons=always --color=always --long --all --git
 }
 
 ## [Completion]
@@ -199,8 +211,10 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 # FZF configuration
 export FZF_COMPLETION_TRIGGER="**"
-export FZF_DEFAULT_COMMAND="ag --depth=50 --hidden --ignore=.git --ignore=.idea -g ''"
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+if command -v ag &>/dev/null; then
+  export FZF_DEFAULT_COMMAND="ag --depth=50 --hidden --ignore=.git --ignore=.idea -g ''"
+  export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+fi
 
 _fzf_compgen_path() {
     ag --hidden --ignore=.git --ignore=.idea -g '' "${1:-.}"
@@ -210,7 +224,7 @@ _fzf_compgen_dir() {
     fd --type d --hidden --follow --exclude ".git" . "${1:-.}"
 }
 
-eval "$(fzf --zsh)"
+command -v fzf &>/dev/null && eval "$(fzf --zsh)"
 
 extract() {
   if [ -f "$1" ]; then
@@ -237,7 +251,7 @@ psgrep() {
   ps aux | grep -i "$1" | grep -v grep
 }
 
-fastfetch
+command -v fastfetch &>/dev/null && fastfetch
 export PATH="$PATH:$HOME/Library/Android/sdk/platform-tools"
 export PATH="$PATH:$HOME/.pub-cache/bin"
 export PATH="$HOME/fvm/default/bin:$PATH"
@@ -249,13 +263,17 @@ export SDKMAN_DIR="$HOME/.sdkman"
 # Ignore dotfiles (like .run) from spelling correction
 CORRECT_IGNORE_FILE='.*'
 export KUBECONFIG=~/.kube/config_dev
-export PATH="$HOME/.local/bin:$PATH"
 alias swilog-dev="cd /Users/mariusdegen/repos/swila && ./scripts/start.sh dev"
 alias swilog-stop="cd /Users/mariusdegen/repos/swila && docker-compose -f docker-compose.dev.yml down"
 
 
+# nvm (Node Version Manager)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && source "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && source "$NVM_DIR/bash_completion"
+
 # Load Angular CLI autocompletion.
-source <(ng completion script)
+[[ -x "$(command -v ng)" ]] && source <(ng completion script)
 alias flutterfire="dart run flutterfire_cli:flutterfire"
 
 
