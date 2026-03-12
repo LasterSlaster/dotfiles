@@ -15,7 +15,7 @@
 --   <CR>         open
 --   s / S        open in horizontal / vertical split
 --   <BS>         navigate up one directory
---   H            toggle hidden files
+--   H            toggle hidden files (shown by default)
 --   /            fuzzy search in the tree
 --   R            refresh
 --   q            close
@@ -86,8 +86,8 @@ return {
 
       filesystem = {
         filtered_items = {
-          visible         = false,  -- hide dotfiles by default; <H> toggles
-          hide_dotfiles   = true,
+          visible         = true,   -- show hidden/dotfiles by default; <H> toggles
+          hide_dotfiles   = false,
           hide_gitignored = true,
         },
         follow_current_file  = { enabled = true },  -- reveal open file in tree
